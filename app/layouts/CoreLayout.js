@@ -1,6 +1,6 @@
 /**
  *
- * App
+ * CoreLayout
  *
  * This component is the skeleton around the actual pages, and should only
  * contain code that should be seen on all pages. (e.g. navigation bar)
@@ -23,7 +23,7 @@ const AppWrapper = styled.div`
   flex-direction: column;
 `;
 
-export function App({ children }) {
+export function CoreLayout(props) {
   return (
     <AppWrapper>
       <Helmet
@@ -35,14 +35,14 @@ export function App({ children }) {
         }]}
       />
       <Header />
-      {React.Children.toArray(children)}
+      {React.Children.toArray(props.children)}
       <Footer />
     </AppWrapper>
-  );
+  )
 }
 
-App.propTypes = {
+CoreLayout.propTypes = {
   children: React.PropTypes.node,
-};
+}
 
-export default withProgressBar(App)
+export default withProgressBar(CoreLayout)

@@ -43,7 +43,7 @@ import { translationMessages } from './i18n';
 import './global-styles';
 
 // Import routes
-import createRoutes from './routes';
+// import createRoutes from './routes';
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
@@ -70,6 +70,7 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: makeSelectLocationState(),
 });
 
+/*
 // Set up the router, wrapping all Routes in the App component
 const rootRoute = {
   component: App,
@@ -94,6 +95,27 @@ const render = (messages) => {
     document.getElementById('app')
   );
 };
+*/
+
+const render = (messages) => {
+  const routes = require('./routes/index').default(store)
+
+  ReactDOM.render(
+    <Provider store={store}>
+      <LanguageProvider messages={messages}>
+        <Router
+          {...{ history, routes }}
+          render={
+            // Scroll to top when going to a new page, imitating default browser
+            // behaviour
+            applyRouterMiddleware(useScroll())
+          }
+        />
+      </LanguageProvider>
+    </Provider>,
+    document.getElementById('app')
+  )
+}
 
 // Hot reloadable translation json files
 if (module.hot) {

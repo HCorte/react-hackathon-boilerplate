@@ -154,6 +154,10 @@
       "redux-saga/no-yield-in-race": 2,
       "redux-saga/yield-effects": 2,
       "require-yield": 0,
+      "semi": [
+        "error",
+        "never"
+      ],
       "import/no-webpack-loader-syntax": 0
     },
     "settings": {

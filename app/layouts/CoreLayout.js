@@ -10,10 +10,6 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import styled from 'styled-components'
 
-import Header from 'components/Header'
-import Footer from 'components/Footer'
-import withProgressBar from 'components/ProgressBar'
-
 const AppWrapper = styled.div`
   max-width: calc(768px + 16px * 2);
   margin: 0 auto;
@@ -27,16 +23,14 @@ export function CoreLayout(props) {
   return (
     <AppWrapper>
       <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
+        titleTemplate="%s - React.js Hackathon Boilerplate"
+        defaultTitle="React.js Hackathon Boilerplate"
         meta={[{
           name: 'description',
-          content: 'A React.js Boilerplate application',
+          content: 'A React.js Hackathon Boilerplate application',
         }]}
       />
-      <Header />
       {React.Children.toArray(props.children)}
-      <Footer />
     </AppWrapper>
   )
 }
@@ -45,4 +39,4 @@ CoreLayout.propTypes = {
   children: React.PropTypes.node,
 }
 
-export default withProgressBar(CoreLayout)
+export default CoreLayout

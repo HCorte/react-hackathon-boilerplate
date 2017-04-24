@@ -58,30 +58,50 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: makeSelectLocationState(),
 })
 
-// Set up the router, wrapping all Routes in the App component
-const rootRoute = {
-  component: App,
-  childRoutes: createRoutes(store),
-}
+const MOUNT_NODE = document.getElementById('app')
 
-const render = (messages) => {
+const renderApp = (messages) => {
+  // eslint-disable-next-line global-require
+  const routes = require('./routes/index').default(store)
+
   ReactDOM.render(
     <Provider store={store}>
       <LanguageProvider messages={messages}>
         <Router
-          history={history}
-          routes={rootRoute}
+          {...{ history, routes }}
           render={
-            // Scroll to top when going to a new page, imitating default browser
-            // behaviour
+            // Scroll to top when going to a new page,
+            // imitating default browser behaviour
             applyRouterMiddleware(useScroll())
           }
         />
       </LanguageProvider>
     </Provider>,
-    document.getElementById('app')
+    MOUNT_NODE
   )
 }
+
+const isDev = (process.env.NODE_ENV === 'development' && module.hot)
+
+const renderError = !isDev
+  ? () => {}
+  : (error) => {
+    // eslint-disable-next-line global-require
+    const RedBox = require('redbox-react').default
+
+    ReactDOM.render(<RedBox {...{ error }} />, MOUNT_NODE)
+  }
+
+const render = !isDev
+  ? (messages) => renderApp(messages)
+  : (messages) => {
+    try {
+      renderApp(messages)
+    } catch (error) {
+      console.error(error) // eslint-disable-line
+      renderError(error)
+    }
+  }
 
 // Hot reloadable translation json files
 if (module.hot) {

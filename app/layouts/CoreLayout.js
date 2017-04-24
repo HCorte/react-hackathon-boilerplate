@@ -9,6 +9,7 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 import styled from 'styled-components'
+import Header from 'components/Header'
 
 const AppWrapper = styled.div`
   max-width: calc(768px + 16px * 2);
@@ -30,6 +31,7 @@ export function CoreLayout(props) {
           content: 'A React.js Hackathon Boilerplate application',
         }]}
         />
+      <Header />
       {React.Children.toArray(props.children)}
     </AppWrapper>
   )

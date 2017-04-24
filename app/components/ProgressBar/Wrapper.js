@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export default styled.div`
   position: fixed;
@@ -9,4 +9,4 @@ export default styled.div`
   opacity: ${(props) => props.hidden ? '0' : '1'};
   transition: all 500ms ease-in-out;
   z-index: ${(props) => props.hidden ? '-10' : '9999'};
-`;
+`

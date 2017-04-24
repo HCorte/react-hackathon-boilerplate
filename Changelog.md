@@ -57,7 +57,7 @@ This release was made possible by [Fullstack React](https://www.fullstackreact.c
 
 ## RBP v3.0: The "JS Fatigue Antivenin" Edition
 
-React Boilerplate (RBP) v3.0.0 is out, and it's a _complete_ rewrite! :tada:
+React Hackathon Boilerplate (RBP) v3.0.0 is out, and it's a _complete_ rewrite! :tada:
 
 We've focused on becoming a rock-solid foundation to start your next project
 with, no matter what its scale. You get to focus on writing your app because we

@@ -2,8 +2,8 @@
  * COMMON WEBPACK CONFIGURATION
  */
 
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -92,4 +92,4 @@ module.exports = (options) => ({
   devtool: options.devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window
   performance: options.performance || {},
-});
+})

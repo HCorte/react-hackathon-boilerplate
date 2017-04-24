@@ -10,38 +10,27 @@ const loadModule = (cb) => (componentModule) => {
 
 const route = 'counter'
 
-export default (store) => ({
-  path : route,
-  getComponent(nextState, cb) {
-    const importModules = Promise.all([
-      import('containers/HomePage'),
-    ])
-  },
-})
+export default (store) => {
+  // Create reusable async injectors using getAsyncInjectors factory
+  const { injectReducer, injectSagas } = getAsyncInjectors(store) // eslint-disable-line no-unused-vars
 
+  return {
+    path: route,
+    name: route,
+    getComponent(nextState, cb) {
+      const importModules = Promise.all([
+        import('./containers/CounterContainer'),
+        import('./modules/counter'),
+      ])
+      const renderRoute = loadModule(cb)
 
+      importModules.then(([component, reducer]) => {
+        injectReducer(route, reducer.default)
 
-import { injectReducer } from '../../store/reducers'
+        renderRoute(component)
+      })
 
-export default (store) => ({
-  path : 'counter',
-  /*  Async getComponent is only invoked when route matches   */
-  getComponent (nextState, cb) {
-    /*  Webpack - use 'require.ensure' to create a split point
-        and embed an async module loader (jsonp) when bundling   */
-    require.ensure([], (require) => {
-      /*  Webpack - use require callback to define
-          dependencies for bundling   */
-      const Counter = require('./containers/CounterContainer').default
-      const reducer = require('./modules/counter').default
-
-      /*  Add the reducer to the store on key 'counter'  */
-      injectReducer(store, { key: 'counter', reducer })
-
-      /*  Return getComponent   */
-      cb(null, Counter)
-
-    /* Webpack named bundle   */
-    }, 'counter')
+      importModules.catch(errorLoading)
+    },
   }
-})
+}

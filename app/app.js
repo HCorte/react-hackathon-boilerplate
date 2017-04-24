@@ -17,9 +17,6 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import { useScroll } from 'react-router-scroll'
 import 'sanitize.css/sanitize.css'
 
-// Import root app
-import App from 'containers/App'
-
 // Import selector for `syncHistoryWithStore`
 import { makeSelectLocationState } from 'containers/App/selectors'
 
@@ -40,9 +37,6 @@ import { translationMessages } from './i18n'
 
 // Import CSS reset and Global Styles
 import './global-styles'
-
-// Import root routes
-import createRoutes from './routes/index'
 
 // Create redux store with history
 // this uses the singleton browserHistory provided by react-router
@@ -74,7 +68,7 @@ const renderApp = (messages) => {
             // imitating default browser behaviour
             applyRouterMiddleware(useScroll())
           }
-        />
+          />
       </LanguageProvider>
     </Provider>,
     MOUNT_NODE

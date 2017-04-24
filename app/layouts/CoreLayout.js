@@ -30,7 +30,6 @@ export function CoreLayout(props) {
           content: 'A React.js Hackathon Boilerplate application',
         }]}
         />
-      <h1>WTF</h1>
       {React.Children.toArray(props.children)}
     </AppWrapper>
   )

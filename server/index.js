@@ -13,6 +13,19 @@ const resolve = require('path').resolve
 const app = express()
 const server = http.Server(app)
 const io = socketio(server)
+const redis = require('redis').createClient
+const adapter = require('socket.io-redis')
+
+const redisPubOpts = {}
+const redisSubOpts = { return_buffers: true }
+
+const REDIS_URL = process.env.REDIS_URL || `redis://localhost:6379`
+
+const pubClient = redis(REDIS_URL, redisPubOpts)
+const subClient = redis(REDIS_URL, redisSubOpts)
+
+io.adapter(adapter({ pubClient, subClient }))
+
 
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);

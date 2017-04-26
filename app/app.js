@@ -17,6 +17,8 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import { useScroll } from 'react-router-scroll'
 import 'sanitize.css/sanitize.css'
 
+import io from 'socket.io-client/dist/socket.io'
+
 // Import selector for `syncHistoryWithStore`
 import { makeSelectLocationState } from 'containers/App/selectors'
 
@@ -54,7 +56,7 @@ const history = syncHistoryWithStore(browserHistory, store, {
 
 const MOUNT_NODE = document.getElementById('app')
 
-const renderApp = (messages) => {
+const renderApp = messages => {
   // eslint-disable-next-line global-require
   const routes = require('./routes/index').default(store)
 
@@ -97,6 +99,13 @@ const render = !isDev
     }
   }
 
+/*
+io.on(`event`, data => {
+  console.debug(`event: data =`, data)
+})
+*/
+// io.connect()
+
 // Hot reloadable translation json files
 if (module.hot) {
   // modules.hot.accept does not accept dynamic dependencies,
@@ -115,7 +124,7 @@ if (!window.Intl) {
       import('intl/locale-data/jsonp/en.js'),
     ]))
     .then(() => render(translationMessages))
-    .catch((err) => {
+    .catch(err => {
       throw err
     })
 } else {

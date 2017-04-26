@@ -11,12 +11,10 @@ module.exports = (options) => ({
     path: path.resolve(process.cwd(), 'build'),
     publicPath: '/',
   }, options.output), // Merge with env dependent settings
-  node: {
-    fs: 'empty', // add to ensure build does not get screwed by socket.io
-    net: 'empty', // add to ensure build does not get screwed by socket.io
-    tls: 'empty', // add to ensure build does not get screwed by socket.io
-    hiredis: 'empty', // add to ensure build does not get screwed by redis-parser
-    'socket.io-client/package': 'empty', // add to ensure build does not get screwed by socket.io-client
+  node: { // add to ensure build does not get screwed by node libs like socket.io
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
   },
   module: {
     loaders: [{
@@ -84,6 +82,12 @@ module.exports = (options) => ({
     new webpack.NamedModulesPlugin(),
   ]),
   resolve: {
+    /*
+    // FIXME: remove this
+    alias: {
+      'socket.io-client': path.join('.', 'socket.io-client', 'socket.io.js'),
+    },
+    */
     modules: ['app', 'node_modules'],
     extensions: [
       '.js',

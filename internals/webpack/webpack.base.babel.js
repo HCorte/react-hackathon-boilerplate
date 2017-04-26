@@ -82,12 +82,6 @@ module.exports = (options) => ({
     new webpack.NamedModulesPlugin(),
   ]),
   resolve: {
-    /*
-    // FIXME: remove this
-    alias: {
-      'socket.io-client': path.join('.', 'socket.io-client', 'socket.io.js'),
-    },
-    */
     modules: ['app', 'node_modules'],
     extensions: [
       '.js',

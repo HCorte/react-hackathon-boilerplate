@@ -17,7 +17,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import { useScroll } from 'react-router-scroll'
 import 'sanitize.css/sanitize.css'
 
-import io from 'socket.io-client/dist/socket.io'
+// import io from 'socket.io-client/dist/socket.io'
 
 // Import selector for `syncHistoryWithStore`
 import { makeSelectLocationState } from 'containers/App/selectors'
@@ -100,11 +100,17 @@ const render = !isDev
   }
 
 /*
-io.on(`event`, data => {
-  console.debug(`event: data =`, data)
+const socket = io()
+socket.on('connect', data => {
+  console.debug(`socket<connect>: data =`, data)
+})
+socket.on('disconnect', data => {
+  console.debug(`socket<disconnect>: data =`, data)
+})
+socket.on(`event`, data => {
+  console.debug(`socket<event>: data =`, data)
 })
 */
-// io.connect()
 
 // Hot reloadable translation json files
 if (module.hot) {

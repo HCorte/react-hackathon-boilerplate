@@ -18,6 +18,7 @@ import { useScroll } from 'react-router-scroll'
 import 'sanitize.css/sanitize.css'
 
 import io from 'socket.io-client/dist/socket.io'
+const constantCase = require('change-case').constantCase
 
 // Import selector for `syncHistoryWithStore`
 import { makeSelectLocationState } from 'containers/App/selectors'
@@ -99,18 +100,21 @@ const render = !isDev
     }
   }
 
+// FIXME: refactor to HOC
 const socket = io()
 socket.on('connect', data => {
   console.debug(`socket<connect>: data =`, data)
 })
 socket.on('disconnect', data => {
   console.debug(`socket<disconnect>: data =`, data)
+  // FIXME: on disconnect reset appropriate data in redux
 })
 socket.on(`event`, data => {
-  console.debug(`socket<event>: data =`, data)
+  const type = constantCase(data.type)
+  const reduxEvent = { ...data, type }
+  store.dispatch(reduxEvent)
+  console.debug(`socket<event>: reduxEvent =`, reduxEvent)
 })
-/*
-*/
 
 // Hot reloadable translation json files
 if (module.hot) {
@@ -123,7 +127,7 @@ if (module.hot) {
 
 // Chunked polyfill for browsers without Intl support
 if (!window.Intl) {
-  (new Promise((resolve) => {
+  (new Promise(resolve => {
     resolve(import('intl'))
   }))
     .then(() => Promise.all([

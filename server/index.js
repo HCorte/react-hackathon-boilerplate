@@ -2,33 +2,34 @@
 
 const express = require('express')
 const http = require('http')
-const socketio = require('socket.io')
 const logger = require('./logger')
 
 const argv = require('minimist')(process.argv.slice(2))
-const setup = require('./middlewares/frontendMiddleware')
+const setup = require('./middlewares/frontend')
 const isDev = process.env.NODE_ENV !== 'production'
 const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false
 const resolve = require('path').resolve
 const app = express()
 const server = http.Server(app)
-const io = socketio(server)
-const redis = require('redis').createClient
-const adapter = require('socket.io-redis')
-
-const redisPubOpts = {}
-const redisSubOpts = { return_buffers: true }
-
-const REDIS_URL = process.env.REDIS_URL || `redis://localhost:6379`
-
-const pubClient = redis(REDIS_URL, redisPubOpts)
-const subClient = redis(REDIS_URL, redisSubOpts)
-
-io.adapter(adapter({ pubClient, subClient }))
-
 
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
+const sessionMiddlware = require('./middlewares/session')
+if (process.env.NODE_ENV === 'production') {
+  // if cookie is secure, then allow trust of proxy on production
+  app.set('trust proxy', 1)
+}
+app.use(sessionMiddlware)
+
+const io = require('./middlewares/socket')(server)
+
+io.on('connection', socket => {
+  console.warn('connection made') // eslint-disable-line
+  socket.emit('event', {
+    type: `SocketConnected`,
+    payload: {},
+  })
+})
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
@@ -42,14 +43,6 @@ const host = customHost || null // Let http.Server use its default IPv6/4 host
 const prettyHost = customHost || 'localhost'
 
 const port = argv.port || process.env.PORT || 3000
-
-io.on('connection', socket => {
-  console.warn('connection made') // eslint-disable-line
-  socket.emit('event', {
-    type: `SocketConnected`,
-    payload: {},
-  })
-})
 
 // Start your app.
 server.listen(port, host, (err) => {

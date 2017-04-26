@@ -43,6 +43,14 @@ const prettyHost = customHost || 'localhost'
 
 const port = argv.port || process.env.PORT || 3000
 
+io.on('connection', socket => {
+  console.warn('connection made') // eslint-disable-line
+  socket.emit('event', {
+    type: `SocketConnected`,
+    payload: {},
+  })
+})
+
 // Start your app.
 server.listen(port, host, (err) => {
   if (err) {

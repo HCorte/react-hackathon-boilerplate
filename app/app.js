@@ -102,11 +102,14 @@ const render = !isDev
 
 // FIXME: refactor to HOC
 const socket = io()
-socket.on('connect', data => {
-  console.debug(`socket<connect>: data =`, data)
+socket.on('connect', () => {
+  console.debug(`socket<connect>`)
+  // FIXME: Why the fuck is this query no registering
+  socket.emit(`query`, { type: `getUser` })
+  // FIXME: Handle re-connection (data: redux reset & load new)
 })
-socket.on('disconnect', data => {
-  console.debug(`socket<disconnect>: data =`, data)
+socket.on('disconnect', reason => {
+  console.debug(`socket<disconnect>: reason =`, reason)
   // FIXME: on disconnect reset appropriate data in redux
 })
 socket.on(`event`, data => {

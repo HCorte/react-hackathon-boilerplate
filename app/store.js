@@ -11,16 +11,16 @@ import createReducer from './reducers'
 const sagaMiddleware = createSagaMiddleware()
 
 export default function configureStore(initialState = {}, history) {
-  // Create the store with two middlewares
+  // Create the store with two middleware
   // 1. sagaMiddleware: Makes redux-sagas work
   // 2. routerMiddleware: Syncs the location/URL path to the state
-  const middlewares = [
+  const middleware = [
     sagaMiddleware,
     routerMiddleware(history),
   ]
 
   const enhancers = [
-    applyMiddleware(...middlewares),
+    applyMiddleware(...middleware),
   ]
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose

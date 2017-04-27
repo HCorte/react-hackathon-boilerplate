@@ -9,7 +9,7 @@ If you really want to get rid of it, you will have to delete its traces from sev
 
 1. Remove statement `import createSagaMiddleware from 'redux-saga'`.
 2. Remove statement `const sagaMiddleware = createSagaMiddleware()`.
-3. Remove `sagaMiddleware` from `middlewares` array.
+3. Remove `sagaMiddleware` from `middleware` array.
 4. Remove statement `store.runSaga = sagaMiddleware.run`
 
 **app/utils/asyncInjectors.js**

@@ -42,7 +42,7 @@ const addDevMiddlewares = (app, webpackConfig) => {
   })
 }
 
-// Production middlewares
+// Production middleware
 const addProdMiddlewares = (app, options) => {
   const publicPath = options.publicPath || '/'
   const outputPath = options.outputPath || path.resolve(process.cwd(), 'build')

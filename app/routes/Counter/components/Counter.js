@@ -1,5 +1,4 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { PropTypes } from 'react'
 
 export const Counter = (props) => (
   <div style={{ margin: '0 auto' }} >

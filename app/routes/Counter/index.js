@@ -1,22 +1,22 @@
 import { getAsyncInjectors } from 'utils/asyncInjectors'
 
-const errorLoading = (err) => {
+const errorLoading = err => {
   console.error('Dynamic page loading failed', err) // eslint-disable-line no-console
 }
 
-const loadModule = (cb) => (componentModule) => {
+const loadModule = cb => componentModule => {
   cb(null, componentModule.default)
 }
 
-const route = 'counter'
+const name = 'counter'
 
 export default (store) => {
   // Create reusable async injectors using getAsyncInjectors factory
-  const { injectReducer, injectSagas } = getAsyncInjectors(store) // eslint-disable-line no-unused-vars
+  const { injectReducer, injectEpics } = getAsyncInjectors(store)
 
   return {
-    path: route,
-    name: route,
+    path: name,
+    name,
     getComponent(nextState, cb) {
       const importModules = Promise.all([
         import('./containers/CounterContainer'),
@@ -24,8 +24,9 @@ export default (store) => {
       ])
       const renderRoute = loadModule(cb)
 
-      importModules.then(([component, reducer]) => {
-        injectReducer(route, reducer.default)
+      importModules.then(([component, mod]) => {
+        injectReducer(name, mod.default)
+        injectEpics(mod.epics)
 
         renderRoute(component)
       })

@@ -91,8 +91,6 @@ export function getAsyncInjectors(store) {
 
   return {
     injectReducer: injectAsyncReducer(store, true),
-    injectEpics: injectAsyncReducer(store, true),
-    // FIXME: remove
-    // injectSagas: injectAsyncSagas(store, true),
+    injectEpics: injectAsyncEpics(store, true),
   }
 }

@@ -45,7 +45,35 @@ export function injectAsyncReducer(store, isValid) {
 }
 
 /**
+ * Inject an asynchronously loaded epic
+ */
+export function injectAsyncEpics(store, isValid) {
+  return function injectEpics(epics) {
+    if (!isValid) checkStore(store)
+
+    invariant(
+      Array.isArray(epics) && epics.map(isFunction).reduce((p, n) => p && n, true),
+      '(app/utils...) injectAsyncEpics: Expected `epics` to be an array of epic functions'
+    )
+
+    warning(
+      !isEmpty(epics),
+      '(app/utils...) injectAsyncEpics: Received an empty `epics` array'
+    )
+
+    epics.forEach(epic => {
+      // don't add an epic that is already registered/running
+      if (store.epicRegistry.indexOf(epic) === -1) {
+        store.epicRegistry.push(epic)
+        store.epic$.next(epic)
+      }
+    })
+  }
+}
+
+/**
  * Inject an asynchronously loaded saga
+ * FIXME: remove
  */
 export function injectAsyncSagas(store, isValid) {
   return function injectSagas(sagas) {
@@ -73,6 +101,8 @@ export function getAsyncInjectors(store) {
 
   return {
     injectReducer: injectAsyncReducer(store, true),
-    injectSagas: injectAsyncSagas(store, true),
+    injectEpics: injectAsyncReducer(store, true),
+    // FIXME: remove
+    // injectSagas: injectAsyncSagas(store, true),
   }
 }

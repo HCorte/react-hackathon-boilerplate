@@ -5,17 +5,19 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { fromJS } from 'immutable'
 import { routerMiddleware } from 'react-router-redux'
-import createSagaMiddleware from 'redux-saga'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { combineEpics, createEpicMiddleware } from 'redux-observable'
 import createReducer from './reducers'
+import rootEpic from './rootEpic'
 
-const sagaMiddleware = createSagaMiddleware()
+const epicMiddleware = createEpicMiddleware(rootEpic)
 
 export default function configureStore(initialState = {}, history) {
   // Create the store with two middleware
-  // 1. sagaMiddleware: Makes redux-sagas work
+  // 1. epicMiddleware: Makes redux-observables work
   // 2. routerMiddleware: Syncs the location/URL path to the state
   const middleware = [
-    sagaMiddleware,
+    epicMiddleware,
     routerMiddleware(history),
   ]
 
@@ -39,18 +41,33 @@ export default function configureStore(initialState = {}, history) {
   )
 
   // Extensions
-  store.runSaga = sagaMiddleware.run
   store.asyncReducers = {} // Async reducer registry
+  /**
+   * Setup to allow async loading of epics as per
+   * https://redux-observable.js.org/docs/recipes/AddingNewEpicsAsynchronously.html
+   *
+   * Used registerEpic (to avoid double loading) from
+   *  http://stackoverflow.com/questions/40202074/is-it-an-efficient-practice-to-add-new-epics-lazily-inside-react-router-onenter
+   */
+  store.epicRegistry = [] // Epic registry
+  store.epic$ = new BehaviorSubject(combineEpics(...store.epicRegistry))
 
   // Make reducers hot reloadable, see http://mxs.is/googmo
   /* istanbul ignore next */
   if (module.hot) {
     module.hot.accept('./reducers', () => {
-      import('./reducers').then((reducerModule) => {
+      import('./reducers').then(reducerModule => {
         const createReducers = reducerModule.default
         const nextReducers = createReducers(store.asyncReducers)
 
         store.replaceReducer(nextReducers)
+      })
+    })
+    // https://redux-observable.js.org/docs/recipes/HotModuleReplacement.html
+    module.hot.accept('./rootEpic', () => {
+      import('./rootEpic').then(rootEpicModule => {
+        const freshRootEpic = rootEpicModule.default
+        epicMiddleware.replaceEpic(freshRootEpic)
       })
     })
   }

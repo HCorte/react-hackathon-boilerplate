@@ -104,9 +104,8 @@ const render = !isDev
 const socket = io()
 socket.on('connect', () => {
   console.debug(`socket<connect>`)
-  // FIXME: Why the fuck is this query no registering
-  socket.emit(`query`, { type: `getUser` })
   // FIXME: Handle re-connection (data: redux reset & load new)
+  socket.emit(`query`, { type: `getUser` })
 })
 socket.on('disconnect', reason => {
   console.debug(`socket<disconnect>: reason =`, reason)

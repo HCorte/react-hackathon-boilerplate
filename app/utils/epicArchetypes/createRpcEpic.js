@@ -1,12 +1,8 @@
 import { EPIC_END } from 'redux-observable'
 import { Observable } from 'rxjs/Observable'
-// import { race } from 'rxjs/observable/race'
 import { ajax } from 'rxjs/observable/dom/ajax'
-// import 'rxjs/observable/race'
-// import 'rxjs/observable/dom/ajax'
-import changeCase from 'change-case'
 
-const race = Observable.race
+import changeCase from 'change-case'
 
 // action creators
 export const rpcRequest = type => payload => ({ type: `${type}_REQUEST`, payload })
@@ -19,7 +15,7 @@ export const rpcSuccess = type => payload => ({ type: `${type}_SUCCESS`, payload
 export const rpcEpic = (type, createUrl) => action$ =>
   action$.ofType(`${type}_REQUEST`)
     .mergeMap(action =>
-      race(
+      Observable.race(
         ajax.getJSON(createUrl(action.payload))
           .map(rpcSuccess)
           .takeUntil(action$.ofType(`${type}_ABORTED`))

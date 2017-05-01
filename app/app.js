@@ -5,7 +5,7 @@
  * code.
  */
 
-// Needed for redux-saga es6 generator support
+// FIXME: What is this needed for???
 import 'babel-polyfill'
 
 // Import all the third party stuff
@@ -18,7 +18,7 @@ import { useScroll } from 'react-router-scroll'
 import 'sanitize.css/sanitize.css'
 
 import io from 'socket.io-client/dist/socket.io'
-const constantCase = require('change-case').constantCase
+import { constantCase } from 'change-case'
 
 // Import selector for `syncHistoryWithStore`
 import { makeSelectLocationState } from 'containers/App/selectors'

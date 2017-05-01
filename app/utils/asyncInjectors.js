@@ -1,3 +1,5 @@
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { combineEpics } from 'redux-observable'
 import conformsTo from 'lodash/conformsTo'
 import isEmpty from 'lodash/isEmpty'
 import isFunction from 'lodash/isFunction'
@@ -16,7 +18,6 @@ export function checkStore(store) {
     subscribe: isFunction,
     getState: isFunction,
     replaceReducer: isFunction,
-    runSaga: isFunction,
     asyncReducers: isObject,
   }
   invariant(
@@ -45,6 +46,16 @@ export function injectAsyncReducer(store, isValid) {
 }
 
 /**
+ * Setup to allow async loading of epics as per
+ * https://redux-observable.js.org/docs/recipes/AddingNewEpicsAsynchronously.html
+ *
+ * Used registerEpic (to avoid double loading) from
+ *  http://stackoverflow.com/questions/40202074/is-it-an-efficient-practice-to-add-new-epics-lazily-inside-react-router-onenter
+ */
+export const epicRegistry = [] // Epic registry
+export const epic$ = new BehaviorSubject(combineEpics(...epicRegistry))
+
+/**
  * Inject an asynchronously loaded epic
  */
 export function injectAsyncEpics(store, isValid) {
@@ -63,35 +74,14 @@ export function injectAsyncEpics(store, isValid) {
 
     epics.forEach(epic => {
       // don't add an epic that is already registered/running
-      if (store.epicRegistry.indexOf(epic) === -1) {
-        store.epicRegistry.push(epic)
-        store.epic$.next(epic)
+      if (epicRegistry.indexOf(epic) === -1) {
+        epicRegistry.push(epic)
+        epic$.next(epic)
       }
     })
   }
 }
 
-/**
- * Inject an asynchronously loaded saga
- * FIXME: remove
- */
-export function injectAsyncSagas(store, isValid) {
-  return function injectSagas(sagas) {
-    if (!isValid) checkStore(store)
-
-    invariant(
-      Array.isArray(sagas),
-      '(app/utils...) injectAsyncSagas: Expected `sagas` to be an array of generator functions'
-    )
-
-    warning(
-      !isEmpty(sagas),
-      '(app/utils...) injectAsyncSagas: Received an empty `sagas` array'
-    )
-
-    sagas.map(store.runSaga)
-  }
-}
 
 /**
  * Helper for creating injectors

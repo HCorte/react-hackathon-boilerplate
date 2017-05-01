@@ -5,12 +5,12 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { fromJS } from 'immutable'
 import { routerMiddleware } from 'react-router-redux'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-import { combineEpics, createEpicMiddleware } from 'redux-observable'
+import { createEpicMiddleware } from 'redux-observable'
 import createReducer from './reducers'
+import { epic$ } from './utils/asyncInjectors'
 import rootEpic from './rootEpic'
 
-const epicMiddleware = createEpicMiddleware(rootEpic)
+const epicMiddleware = createEpicMiddleware(rootEpic(epic$))
 
 export default function configureStore(initialState = {}, history) {
   // Create the store with two middleware
@@ -42,15 +42,6 @@ export default function configureStore(initialState = {}, history) {
 
   // Extensions
   store.asyncReducers = {} // Async reducer registry
-  /**
-   * Setup to allow async loading of epics as per
-   * https://redux-observable.js.org/docs/recipes/AddingNewEpicsAsynchronously.html
-   *
-   * Used registerEpic (to avoid double loading) from
-   *  http://stackoverflow.com/questions/40202074/is-it-an-efficient-practice-to-add-new-epics-lazily-inside-react-router-onenter
-   */
-  store.epicRegistry = [] // Epic registry
-  store.epic$ = new BehaviorSubject(combineEpics(...store.epicRegistry))
 
   // Make reducers hot reloadable, see http://mxs.is/googmo
   /* istanbul ignore next */

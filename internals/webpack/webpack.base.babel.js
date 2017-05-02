@@ -5,7 +5,7 @@
 const path = require('path')
 const webpack = require('webpack')
 
-module.exports = (options) => ({
+module.exports = options => ({
   entry: options.entry,
   output: Object.assign({ // Compile into js/build.js
     path: path.resolve(process.cwd(), 'build'),
@@ -63,6 +63,9 @@ module.exports = (options) => ({
       query: {
         limit: 10000,
       },
+    }, {
+      test: /(\.md|\.map)$/,
+      loader: 'null-loader',
     }],
   },
   plugins: options.plugins.concat([

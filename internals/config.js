@@ -20,6 +20,8 @@ const ReactBoilerplate = {
        * we need to exclude dependencies which are not intended for the browser
        * by listing them here.
        */
+      // FIXME: find way to auto-exclude all node dependencies
+      // or, auto-include only FE deps
       exclude: [
         'chalk',
         'compression',
@@ -28,6 +30,8 @@ const ReactBoilerplate = {
         'ip',
         'minimist',
         'sanitize.css',
+        'socket.io',
+        'bcrypt',
       ],
 
       /**

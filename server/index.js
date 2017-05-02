@@ -15,7 +15,9 @@ const sessionMiddleware = require('./middleware/session')
 const socketMiddleware = require('./middleware/socket')
 
 const isDev = process.env.NODE_ENV !== 'production'
-const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngrok') : false
+const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel
+  ? require('ngrok')
+  : false
 
 const app = express()
 const server = http.Server(app)
@@ -42,7 +44,7 @@ app.use(sessionMiddleware)
 // Initialize Passport (with session)
 app.use(passport.initialize())
 app.use(passport.session())
-
+require('./middleware/passport')(passport)
 
 const io = socketio(server)
 io.adapter(socketMiddleware.attachRedis())
@@ -50,6 +52,10 @@ io.use(socketMiddleware.usePassport(cookieParser))
 io.on('connection', socketMiddleware.connection())
 io.on('command', socketMiddleware.command())
 io.on('query', socketMiddleware.query())
+
+app.post('/login', passport.authenticate('local-login'), (req, res) => {
+  res.json({ user: req.user })
+})
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {

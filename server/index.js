@@ -53,9 +53,8 @@ io.on('connection', socketMiddleware.connection())
 io.on('command', socketMiddleware.command())
 io.on('query', socketMiddleware.query())
 
-app.post('/login', passport.authenticate('local-login'), (req, res) => {
-  res.json({ user: req.user })
-})
+// Setup REST routes
+require('./middleware/routes')(passport, app)
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {

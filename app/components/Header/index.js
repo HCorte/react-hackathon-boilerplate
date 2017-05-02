@@ -10,4 +10,8 @@ export default () =>
     <Link to="/counter" activeClassName="route--active">
       Counter
     </Link>
+    {' · '}
+    <Link to="/login" activeClassName="route--active">
+      Log In
+    </Link>
   </div>

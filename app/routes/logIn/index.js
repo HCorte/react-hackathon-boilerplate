@@ -12,8 +12,8 @@ import { errorLoading, loadModule } from 'utils/asyncLoaders'
  *                      or `./modules/${name}`
  */
 const config = {
-  name: 'counter',
-  container: 'CounterContainer',
+  name: 'logIn',
+  container: 'LogIn', // this should not be necessary
 }
 
 export default (store) => {

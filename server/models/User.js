@@ -5,7 +5,7 @@ const email = {
   type: String,
   required: true,
   unique: true,
-  // index: true,
+  index: true,
 }
 
 const username = {
@@ -14,7 +14,7 @@ const username = {
   unique: true,
   maxlength: 15,
   minlength: 2,
-  // index: true,
+  index: true,
 }
 const password = {
   type: String,
@@ -27,6 +27,8 @@ const userSchema = {
   password,
   username,
 }
+
+// FIXME: ensure indexing is complete before saving, so that fields can be truly unique
 
 userSchema.pre('save', next => {
   this.email = this.email.toLowerCase()

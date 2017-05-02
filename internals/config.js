@@ -32,6 +32,7 @@ const ReactBoilerplate = {
         'sanitize.css',
         'socket.io',
         'bcrypt',
+        'mongoose',
       ],
 
       /**

@@ -21,6 +21,7 @@ const _getUser = query => {
 
   console.error(`\nERROR: _getUser NOT implemented\n`)
   console.warn(`_getUser: cleanQuery =`, cleanQuery)
+  console.warn(`_getUser: get on either username OR email`)
 
   return Promise.resolve({
     _id: 'safkj13th3pj1pu4gh1p3u94gbq',

@@ -9,12 +9,10 @@ const { generateHash } = require('../middleware/user')
 
 const _getUser = query => {
   const cleanQuery = compose(
-    /*
     evolve({
       email: toLower,
       username: toLower,
     }),
-    */
     pick(['_id', 'username', 'email'])
   )(query)
 

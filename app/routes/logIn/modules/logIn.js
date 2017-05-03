@@ -1,5 +1,10 @@
+import createRpcEpic from 'utils/epicArchetypes/createRpcEpic'
 
-export const epics = []
+const type = 'log in user'
+const createUrl = () => `/login`
+const { logInUserEpic } = createRpcEpic(type, createUrl)
+
+export const epics = [logInUserEpic]
 // ------------------------------------
 // Action Handlers
 // ------------------------------------

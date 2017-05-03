@@ -1,4 +1,3 @@
-import { pascalCase } from 'change-case'
 import { getAsyncInjectors } from 'utils/asyncInjectors'
 import { errorLoading, loadModule } from 'utils/asyncLoaders'
 
@@ -13,27 +12,27 @@ import { errorLoading, loadModule } from 'utils/asyncLoaders'
  */
 const config = {
   name: 'logIn',
-  container: 'LogIn', // this should not be necessary
 }
+
 
 export default (store) => {
   // Create reusable async injectors using getAsyncInjectors factory
   const { injectReducer, injectEpics } = getAsyncInjectors(store)
 
-  const {
-    container,
-    redux,
-    name,
-    path,
-  } = config
+  // define variables as set via config
+  const { name } = config
+  const path = config.path || name.toLowerCase()
+  // cannot use change-case on FE... :'(
+  const container = config.container || name[0].toUpperCase() + name.slice(1)
+  const redux = config.redux || name
 
   return {
-    path: path || name.toLowerCase(),
+    path,
     name,
     getComponent(nextState, cb) {
       const importModules = Promise.all([
-        import(`./containers/${container || pascalCase(name)}`),
-        import(`./modules/${redux || name}`),
+        import(`./containers/${container}`),
+        import(`./modules/${redux}`),
       ])
       const renderRoute = loadModule(cb)
 

@@ -20,12 +20,12 @@ export default (store) => {
   // Create reusable async injectors using getAsyncInjectors factory
   const { injectReducer, injectEpics } = getAsyncInjectors(store)
 
-  const {
-    container,
-    redux,
-    name,
-    path,
-  } = config
+  // define variables as set via config
+  const { name } = config
+  const path = config.path || name.toLowerCase()
+  // cannot use change-case on FE... :'(
+  const container = config.container || name[0].toUpperCase() + name.slice(1)
+  const redux = config.redux || name
 
   return {
     path: path || name.toLowerCase(),

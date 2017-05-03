@@ -37,7 +37,7 @@ export default (store) => {
       const renderRoute = loadModule(cb)
 
       importModules.then(([component, mod]) => {
-        injectReducer(name, mod.default)
+        if (mod.default) injectReducer(name, mod.default)
         if (mod.epics) injectEpics(mod.epics)
 
         renderRoute(component)

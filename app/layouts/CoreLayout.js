@@ -20,7 +20,11 @@ const AppWrapper = styled.div`
   flex-direction: column;
 `
 
-export function CoreLayout(props) {
+const CoreLayout = ({ children, ...props }) => {
+  // const childrenWithProps = React.Children.toArray(children)
+  const childrenWithProps = React.Children
+    .map(children, child => React.cloneElement(child, props))
+
   return (
     <AppWrapper>
       <Helmet
@@ -32,7 +36,7 @@ export function CoreLayout(props) {
         }]}
         />
       <Header />
-      {React.Children.toArray(props.children)}
+      {childrenWithProps}
     </AppWrapper>
   )
 }

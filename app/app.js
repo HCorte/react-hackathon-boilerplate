@@ -21,6 +21,7 @@ import io from 'socket.io-client/dist/socket.io'
 import { constantCase } from 'change-case'
 
 // Import selector for `syncHistoryWithStore`
+// FIXME: move this to User or move User to App
 import { makeSelectLocationState } from 'containers/App/selectors'
 
 // Import Language Provider

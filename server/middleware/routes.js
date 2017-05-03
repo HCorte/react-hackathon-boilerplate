@@ -3,7 +3,7 @@ const userCommands = require('../queries/user')
 
 
 module.exports = (passport, app) => {
-  app.post('signup', (req, res) => {
+  app.post('/api/signup', (req, res) => {
     userQueries._getUser(req.body)
       .delay(2000)
       .then(existingUser => {
@@ -20,7 +20,7 @@ module.exports = (passport, app) => {
       .catch(err => { res.status(500).json({ error: err.message }) })
   })
 
-  app.post('login', passport.authenticate('local-login'), (req, res) => {
+  app.post('/api/login', passport.authenticate('local-login'), (req, res) => {
     res.json({ user: req.user })
   })
 }

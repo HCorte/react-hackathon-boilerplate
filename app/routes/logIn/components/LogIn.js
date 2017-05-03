@@ -1,39 +1,23 @@
 import React, { PropTypes } from 'react'
 import { Field } from 'redux-form/immutable'
+import FieldInput from 'components/FieldInput'
 
-const renderField = ({ input, label, type, meta: { touched, error } }) => (
-  <div>
-    <label htmlFor={label}>{label}</label>
-    <div>
-      <input {...input} type={type} placeholder={label} id={label} />
-      {touched && error && <span>{error}</span>}
-    </div>
-  </div>
-)
-
-renderField.propTypes = {
-  input: PropTypes.any.isRequired,
-  label: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  meta: PropTypes.shape({
-    touched: PropTypes.bool,
-    error: PropTypes.any,
-  }),
-}
+const pp = data => console.warn(`onSubmit: data =`, data)
 
 const LogIn = ({
-  logInUserRequest,
-  // user,
+  handleSubmit,
+  user,
 }) =>
-  <form onSubmit={logInUserRequest}>
-    <Field component={renderField} name="username" type="text" label="Username" />
-    <Field component={renderField} name="password" type="password" label="Password" />
+  <form onSubmit={handleSubmit}>
+    <Field component={FieldInput} name="username" type="text" label="Username" />
+    <Field component={FieldInput} name="password" type="password" label="Password" />
     <button type="submit" disabled={false}>Submit</button>
   </form>
 
 LogIn.propTypes = {
-  logInUserRequest: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   // user: UserType.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
 export default LogIn

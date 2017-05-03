@@ -23,12 +23,15 @@ const _getUser = query => {
   console.warn(`_getUser: cleanQuery =`, cleanQuery)
   console.warn(`_getUser: get on either username OR email`)
 
-  return Promise.resolve({
-    _id: 'safkj13th3pj1pu4gh1p3u94gbq',
-    username: 'jan-jan',
-    password: generateHash('password'),
-    active: true,
-  })
+  const result = cleanQuery.username !== 'jan-jan'
+    ? undefined
+    : {
+      _id: 'safkj13th3pj1pu4gh1p3u94gbq',
+      username: 'jan-jan',
+      password: generateHash('password'),
+      active: true,
+    }
+  return Promise.resolve(result)
 }
 
 module.exports = {

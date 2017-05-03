@@ -1,6 +1,5 @@
 import { EPIC_END } from 'redux-observable'
 import { Observable } from 'rxjs/Observable'
-import { ajax } from 'rxjs/observable/dom/ajax'
 
 import changeCase from 'change-case'
 
@@ -12,11 +11,23 @@ export const rpcSuccess = type => payload => ({ type: `${type}_SUCCESS`, payload
 // If the EPIC_END, emit a cancel action to
 // put the store in the correct state
 // This is needed for hot reloading
-export const rpcEpic = (type, createUrl) => action$ =>
+/**
+ * [rpcEpic description]
+ * @param  {String} type          [eg, 'create user']
+ * @param  {function} createUrl   [eg, ({ id }) => `/users/{id}`]
+ * @param  {Object} [settings={}] [eg, { method: 'POST' }]
+ * @return {Observable}           [description]
+ */
+export const rpcEpic = (type, createUrl, settings) => action$ =>
   action$.ofType(`${type}_REQUEST`)
-    .mergeMap(action =>
-      Observable.race(
-        ajax.getJSON(createUrl(action.payload))
+    .mergeMap(action => {
+      const ajaxSettings = Object.assign(
+        { url: createUrl(action.payload.toJS()) },
+        settings
+      )
+
+      return Observable.race(
+        Observable.fromPromise(fetch(ajaxSettings))
           .map(rpcSuccess)
           .takeUntil(action$.ofType(`${type}_ABORTED`))
           .catch(error => {
@@ -37,22 +48,24 @@ export const rpcEpic = (type, createUrl) => action$ =>
           .take(1)
           .mapTo({ type: `${type}_ABORTED` })
       )
+    }
     )
 /**
  * [description]
  * @param  {String} type [eg, 'fetch user']
  * @param  {Function} createUrl [should return url string]
+ * @param  {Object} settings [eg, { method: 'GET' }]
  * @return {Object} [consisting of reuest action and epic]
  *
  * Eg,
  * const { fetchUserRequest, fetchUserEpic } = rpcEpic('fetch user', payload => `/api/user/${payload.userId}`)
  */
-export default (type, createUrl) => {
+export default (type, createUrl, settings = {}) => {
   const TYPE = changeCase.constantCase(type)
   const typeCamel = changeCase.camelCase(type)
 
   return {
     [`${typeCamel}Request`]: rpcRequest(TYPE),
-    [`${typeCamel}Epic`]: rpcEpic(TYPE, createUrl),
+    [`${typeCamel}Epic`]: rpcEpic(TYPE, createUrl, settings),
   }
 }

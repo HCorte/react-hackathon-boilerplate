@@ -15,7 +15,7 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = null
+const initialState = {}
 export default function counterReducer(state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 

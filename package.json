@@ -258,6 +258,7 @@
     "redis": "^2.7.1",
     "redis-url": "^1.2.1",
     "redux": "3.6.0",
+    "redux-form": "^6.6.3",
     "redux-immutable": "3.0.8",
     "redux-observable": "^0.14.1",
     "redux-saga": "0.14.0",

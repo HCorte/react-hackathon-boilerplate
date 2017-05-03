@@ -1,4 +1,3 @@
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form/immutable'
 
@@ -25,11 +24,12 @@ const mapStateToProps = () => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  // FIXME: This places the password in the redux stack, this seems a really bad idea
   onSubmit: payload => dispatch(requests.logInUserRequest(payload)),
-  // FIXME: This is an ugly hack, and should be replaced asap
   /*
   onSubmit: body => {
-    dispatch({ type: 'LOG_IN_REQUEST' })
+    // FIXME: remove epic for this to work
+    dispatch({ type: 'LOG_IN_USER_REQUEST' })
     return fetch('/api/login', {
       method: 'POST',
       headers: {

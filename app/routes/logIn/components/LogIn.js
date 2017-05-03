@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react'
 import { Field } from 'redux-form/immutable'
 import FieldInput from 'components/FieldInput'
 
-const pp = data => console.warn(`onSubmit: data =`, data)
-
 const LogIn = ({
   handleSubmit,
   user,
@@ -11,7 +9,7 @@ const LogIn = ({
   <form onSubmit={handleSubmit}>
     <Field component={FieldInput} name="username" type="text" label="Username" />
     <Field component={FieldInput} name="password" type="password" label="Password" />
-    <button type="submit" disabled={false}>Submit</button>
+    <button type="submit" disabled={user.isLoading}>Submit</button>
   </form>
 
 LogIn.propTypes = {

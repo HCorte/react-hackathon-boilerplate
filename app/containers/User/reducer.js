@@ -8,6 +8,7 @@ const ACTION_HANDLERS = {
   }),
   LOG_IN_USER_SUCCESS: (state, action) => action.payload,
   LOG_IN_USER_FAILURE: (state, action) => action.payload,
+  LOG_IN_USER_ABORTED: () => initialState,
   LOG_OUT_USER: () => initialState,
 }
 

@@ -2,9 +2,15 @@ import createRpcEpic from 'utils/epicArchetypes/createRpcEpic'
 
 const type = 'log in user'
 const createUrl = () => `/login`
-const { logInUserEpic } = createRpcEpic(type, createUrl)
 
+// FIXME: hide data in redux, because this a login
+const { logInUserEpic, logInUserRequest } = createRpcEpic(type, createUrl)
+
+export const requests = {
+  logInUserRequest,
+}
 export const epics = [logInUserEpic]
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------

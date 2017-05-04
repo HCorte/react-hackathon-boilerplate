@@ -49,9 +49,7 @@ require('./middleware/passport')(passport)
 const io = socketio(server)
 io.adapter(socketMiddleware.attachRedis())
 io.use(socketMiddleware.usePassport(cookieParser))
-io.on('connection', socketMiddleware.connection())
-io.on('command', socketMiddleware.command())
-io.on('query', socketMiddleware.query())
+io.on('connection', socketMiddleware.connection(io))
 
 // Setup REST routes
 require('./middleware/routes')(passport, app)

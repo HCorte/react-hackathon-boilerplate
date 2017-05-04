@@ -23,4 +23,13 @@ module.exports = (passport, app) => {
   app.post('/api/login', passport.authenticate('local-login'), (req, res) => {
     res.json({ user: req.user })
   })
+
+  app.get('/api/logout', (req, res) => {
+    req.logOut()
+    req.session.destroy(err => {
+      if (err) console.warn(`logout: err =`, err)
+      // FIXME: redirect is probably senseless
+      res.redirect('/') // Inside a callback… bulletproof!
+    })
+  })
 }

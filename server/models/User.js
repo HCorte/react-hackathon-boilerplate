@@ -22,11 +22,11 @@ const password = {
   required: true,
 }
 
-const userSchema = {
+const userSchema = mongoose.Schema({
   email,
   password,
   username,
-}
+})
 
 // FIXME: ensure indexing is complete before saving, so that fields can be truly unique
 

@@ -38,8 +38,6 @@ const usePassport = cookieParser => {
 
     if (error) throw new Error(message)
 
-    console.warn('onAuthorizeFail: failed connection to socket.io:', message)
-
     // If you don't want to accept the connection
     // if (error) accept(new Error(message))
     // this error will be sent to the user as a special error-package
@@ -67,7 +65,10 @@ const usePassport = cookieParser => {
 
 const _createObjectFromKeys = sourceObject => (targetObject, key) =>
   Object.assign({ [key]: sourceObject[key] }, targetObject)
-
+/**
+ * commands by default require a user to be logged in,
+ * but some require admin priviliges, ie, adminCommandList
+ */
 const adminCommandList = []
 const userCommands = Object.keys(unfilteredCommands)
   // remove commands with leading underscore, ie, remove private functions
@@ -81,6 +82,11 @@ const adminCommands = adminCommandList
   .reduce(_createObjectFromKeys(unfilteredCommands), {})
 debug(`command: adminCommands =`, adminCommands)
 
+
+/**
+ * queries by default are available to public.,
+ * except for those that required user to be signed in, ie, userQueriesList
+ */
 const userQueriesList = []
 const userQueries = userQueriesList
   .reduce(_createObjectFromKeys(unfilteredQueries), {})
@@ -102,47 +108,43 @@ debug(`command: publicQueries =`, publicQueries)
 const connection = io =>
   socket => {
     console.warn('socket<connection>') // eslint-disable-line
+    // console.log('connection: Object.keys(socket.request) =', Object.keys(socket.request))
+    console.log('connection: socket.request.sessionID =', socket.request.sessionID)
+    console.log('connection: socket.request.cookie =', socket.request.cookie)
     console.log('connection: socket.request.user =', socket.request.user)
-    socket.emit('event', {
-      type: `SocketConnected`,
-      payload: {},
-    })
-    // FIXME: on connection if session, then return user (getMe)
 
+    socket.emit('event', { type: `SocketConnected` })
+
+    const userIsLoggedIn = socket.request.user.logged_in
+    const isAdminUser = socket.request.user.role === 'admin'
+
+    if (userIsLoggedIn) {
+      // FIXME: on connection if session, then return user (getMe)
+    }
 
     socket.on('command', data => {
       console.warn(`socket<command>: data =`, data)
-      console.log('command: socket.request.user =', socket.request.user)
 
       const isUserCommand = Reflect.has(userCommands, data.type)
       const isAdminCommand = Reflect.has(adminCommands, data.type)
-      if (isUserCommand || isAdminCommand) {
-        // check if user is attached by middleware,
-        const userIsLoggedIn = socket.request.user.logged_in
 
-        if (!userIsLoggedIn) {
-          socket.emit('event', {
-            type: 'CommandRejected',
-            code: 401, // user not authorized / logged in
-            payload: data,
-          })
-        } else { // user is logged in so proceed
-          if (isUserCommand) { // eslint-disable-line
-            userCommands[data.type](io, socket, data)
-          } else {
-            const isAdminUser = false
-            if (!isAdminUser) {
-              socket.emit('event', {
-                type: 'CommandRejected',
-                code: 403, // user does not have correct role
-                payload: data,
-              })
-            } else {
-              adminCommands[data.type](io, socket, data)
-            }
-          }
-        }
-      } else {
+      if (isUserCommand && userIsLoggedIn) {
+        userCommands[data.type](io, socket, data)
+      } else if (isAdminCommand && isAdminUser) {
+        adminCommands[data.type](io, socket, data)
+      } else if (!userIsLoggedIn) {
+        socket.emit('event', {
+          type: 'CommandRejected',
+          code: 401, // user not authorized / logged in
+          payload: data,
+        })
+      } else if (isAdminCommand && !isAdminUser) {
+        socket.emit('event', {
+          type: 'CommandRejected',
+          code: 403, // user does not have correct role
+          payload: data,
+        })
+      } else if (!isUserCommand && !isAdminCommand) {
         socket.emit('event', {
           type: 'CommandRejected',
           code: 404, // command not found
@@ -153,13 +155,26 @@ const connection = io =>
 
     socket.on('query', data => {
       console.warn(`socket<query>: data =`, data)
-      console.log('query: socket.request.user =', socket.request.user)
 
-      socket.emit('event', {
-        type: 'QueryRejected',
-        code: 404,
-        payload: data,
-      })
+      const isUserQuery = Reflect.has(userQueries, data.type)
+      const isPublicQuery = Reflect.has(publicQueries, data.type)
+      if (isPublicQuery) {
+        publicQueries[data.type](io, socket, data)
+      } else if (isUserQuery && userIsLoggedIn) {
+        userQueries[data.type](io, socket, data)
+      } else if (isUserQuery && !userIsLoggedIn) {
+        socket.emit('event', {
+          type: 'CommandRejected',
+          code: 401, // user not authorized / logged in
+          payload: data,
+        })
+      } else if (!isUserQuery && !isPublicQuery) {
+        socket.emit('event', {
+          type: 'QueryRejected',
+          code: 404,
+          payload: data,
+        })
+      }
     })
   }
 

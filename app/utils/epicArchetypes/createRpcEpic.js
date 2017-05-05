@@ -18,16 +18,17 @@ export const rpcSuccess = type => payload => ({ type: `${type}_SUCCESS`, payload
  * @param  {Object} [settings={}] [eg, { method: 'POST' }]
  * @return {Observable}           [description]
  */
-export const rpcEpic = (type, createUrl, settings) => action$ =>
+export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
   action$.ofType(`${type}_REQUEST`)
     .mergeMap(action => {
-      const ajaxSettings = Object.assign(
-        { url: createUrl(action.payload.toJS()) },
+      const url = `/api/${createUrl(action.payload.toJS())}`
+      const payload = Object.assign(
+        { body: JSON.stringify(action.payload.toJS()) },
         settings
       )
 
       return Observable.race(
-        Observable.fromPromise(fetch(ajaxSettings))
+        Observable.fromPromise(fetch(url, payload))
           .map(rpcSuccess)
           .takeUntil(action$.ofType(`${type}_ABORTED`))
           .catch(error => {
@@ -48,8 +49,8 @@ export const rpcEpic = (type, createUrl, settings) => action$ =>
           .take(1)
           .mapTo({ type: `${type}_ABORTED` })
       )
-    }
-    )
+    })
+
 /**
  * [description]
  * @param  {String} type [eg, 'fetch user']

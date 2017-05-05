@@ -1,5 +1,9 @@
 import { EPIC_END } from 'redux-observable'
+// FIXME: Don't load full Observable,
+// instead load as
 // import { Observable } from 'rxjs/Observable'
+// with only needed operators
+// import { fromPromise } from 'rxjs/add/observable/fromPromise'
 import { Observable } from 'rxjs/Rx'
 import { mapTo } from 'rxjs/operator/mapTo'
 import { take } from 'rxjs/operator/take'

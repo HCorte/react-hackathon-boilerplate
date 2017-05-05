@@ -44,15 +44,9 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
 
       return Observable.race(
         Observable.fromPromise(fetch(url, payload))
-<<<<<<< HEAD
-          ::map(rpcSuccess)
-          ::takeUntil(action$.ofType(`${type}_ABORTED`))
-          ::rxCatch(error => {
-=======
           .map(rpcSuccess(type))
           .takeUntil(action$.ofType(`${type}_ABORTED`))
           .catch(error => {
->>>>>>> dev-clean
             const failure = {
               type: `${type}_FAILURE`,
               payload: error.xhr.response,

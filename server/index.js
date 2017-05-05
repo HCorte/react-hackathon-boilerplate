@@ -34,7 +34,8 @@ app.use((req, res, next) => {
 */
 // FIXME: add helmet for security purposes
 app.use(bodyParser.json())
-app.use(cookieParser())
+app.use(cookieParser(process.env.COOKIE_SECRET || 'c00k13_s3cr3t', {}))
+
 // Initialize session
 if (process.env.NODE_ENV === 'production') {
   // if cookie is secure, then allow trust of proxy on production

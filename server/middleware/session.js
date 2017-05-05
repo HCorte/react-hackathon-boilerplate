@@ -10,6 +10,7 @@ const basicSettings = {
     // NOTE: If secure you need to set "trust proxy" in express
     secure: process.env.NODE_ENV === 'production',
   },
+  name: 'express.sid',
   // name: process.env.COOKIE_NAME || 'c00k13_n4m3',
   resave: false,
   saveUninitialized: false,

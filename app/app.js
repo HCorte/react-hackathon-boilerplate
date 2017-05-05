@@ -116,6 +116,15 @@ socket.on(`event`, data => {
   const type = constantCase(data.type)
   const reduxEvent = { ...data, type }
   store.dispatch(reduxEvent)
+  if (data.type === 'CommandRejected'
+    || data.type === 'QueryRejected'
+  ) {
+    const reduxEventFailure = {
+      ...data.payload,
+      type: `${constantCase(data.payload.type)}_FAILURE`,
+    }
+    store.dispatch(reduxEventFailure)
+  }
   console.debug(`socket<event>: reduxEvent =`, reduxEvent)
 })
 

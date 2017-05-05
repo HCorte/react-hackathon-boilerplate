@@ -1,6 +1,8 @@
 import { EPIC_END } from 'redux-observable'
-import { Observable } from 'rxjs/Observable'
-
+// import { Observable } from 'rxjs/Observable'
+import { Observable } from 'rxjs/Rx'
+import { mapTo } from 'rxjs/operator/mapTo'
+import { take } from 'rxjs/operator/take'
 import changeCase from 'change-case'
 
 // action creators
@@ -35,7 +37,7 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
 
       return Observable.race(
         Observable.fromPromise(fetch(url, payload))
-          .map(rpcSuccess)
+          .map(rpcSuccess(type))
           .takeUntil(action$.ofType(`${type}_ABORTED`))
           .catch(error => {
             const failure = {
@@ -52,8 +54,8 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
             return Observable.of(actions)
           }),
         action$.ofType(EPIC_END)
-          .take(1)
-          .mapTo({ type: `${type}_ABORTED` })
+          ::take(1)
+          ::mapTo({ type: `${type}_ABORTED` })
       )
     })
 

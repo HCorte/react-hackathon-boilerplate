@@ -101,7 +101,7 @@ const render = !isDev
     }
   }
 
-// FIXME: refactor to HOC
+// FIXME: refactor to HOC ???
 const socket = io()
 socket.on('connect', () => {
   console.debug(`socket<connect>`)

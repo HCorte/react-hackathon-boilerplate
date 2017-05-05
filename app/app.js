@@ -35,8 +35,12 @@ import 'file-loader?name=[name].[ext]!./.htaccess'
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import configureStore from './store'
+import { epic$ } from './utils/asyncInjectors'
+import { commandEpic, queryEpic } from './containers/App/module'
+import { logInUserSuccessEpic, logOutUserSuccessEpic } from './containers/User/module'
 
-// Import i18n messages
+//
+// // Import i18n messUserages
 import { translationMessages } from './i18n'
 
 // Import CSS reset and Global Styles
@@ -103,6 +107,12 @@ const render = !isDev
 
 // FIXME: refactor to HOC
 const socket = io()
+
+epic$.next(logInUserSuccessEpic(socket))
+epic$.next(logOutUserSuccessEpic(socket))
+epic$.next(commandEpic(socket))
+epic$.next(queryEpic(socket))
+
 socket.on('connect', () => {
   console.debug(`socket<connect>`)
   // FIXME: Handle re-connection (data: redux reset & load new)
@@ -114,18 +124,18 @@ socket.on('disconnect', reason => {
 })
 socket.on(`event`, data => {
   const type = constantCase(data.type)
-  const reduxEvent = { ...data, type }
-  store.dispatch(reduxEvent)
+  const reduxAction = { ...data, type }
+  store.dispatch(reduxAction)
   if (data.type === 'CommandRejected'
     || data.type === 'QueryRejected'
   ) {
-    const reduxEventFailure = {
+    const reduxActionFailure = {
       ...data.payload,
       type: `${constantCase(data.payload.type)}_FAILURE`,
     }
-    store.dispatch(reduxEventFailure)
+    store.dispatch(reduxActionFailure)
   }
-  console.debug(`socket<event>: reduxEvent =`, reduxEvent)
+  console.debug(`socket<event>: reduxAction =`, reduxAction)
 })
 
 // Hot reloadable translation json files

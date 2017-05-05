@@ -105,7 +105,7 @@ const render = !isDev
     }
   }
 
-// FIXME: refactor to HOC
+// FIXME: refactor to HOC ???
 const socket = io()
 
 epic$.next(logInUserSuccessEpic(socket))

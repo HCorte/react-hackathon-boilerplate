@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy
+const debug = require('debug')('boilerplate:middleware:passport')
 
 const userQueries = require('../queries/user')
 const {
@@ -39,6 +40,7 @@ module.exports = passport => {
     new LocalStrategy(localConfig, (req, username, password, done) =>
       userQueries._getUser({ username, email: req.body.email })
         .then(user => {
+          debug(`passport: local-login: user =`, sanitizeUser(user))
           if (!user) {
             slowDone('User not found', done)
           } else if (!checkPassword(password, user)) {

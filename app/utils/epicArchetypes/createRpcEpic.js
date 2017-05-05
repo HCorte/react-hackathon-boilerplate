@@ -23,7 +23,13 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
     .mergeMap(action => {
       const url = `/api/${createUrl(action.payload.toJS())}`
       const payload = Object.assign(
-        { body: JSON.stringify(action.payload.toJS()) },
+        {
+          body: JSON.stringify(action.payload.toJS()),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
         settings
       )
 

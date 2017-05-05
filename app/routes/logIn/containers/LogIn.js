@@ -29,7 +29,8 @@ const mapDispatchToProps = dispatch => ({
   /*
   onSubmit: body => {
     // FIXME: remove epic for this to work
-    dispatch({ type: 'LOG_IN_USER_REQUEST' })
+    // dispatch({ type: 'LOG_IN_USER_REQUEST' })
+    dispatch({ type: 'LOG_IN_REQUEST' })
     return fetch('/api/login', {
       method: 'POST',
       headers: {

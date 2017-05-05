@@ -12,8 +12,8 @@ const client = redisUrl.connect(url)
 const store = new RedisStore({ client })
 
 const plus = {
-  // key: process.env.COOKIE_KEY || 'c00k13_k3y',
-  key: 'express.sid',
+  key: process.env.COOKIE_KEY || 'c00k13_k3y',
+  // key: 'express.sid',
   secret: process.env.COOKIE_SECRET || 'c00k13_s3cr3t',
   store,
 }

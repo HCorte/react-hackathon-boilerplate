@@ -7,7 +7,7 @@ export const logInUserSuccessEpic = socket => action$ =>
       console.warn(`logInUserSuccessEpic: socket.close()`)
       socket.close()
       console.warn(`logInUserSuccessEpic: socket.open()`)
-      socket.open()
+      socket.open('', { forceNew: true })
     })
 
 export const logOutUserSuccessEpic = socket => action$ =>
@@ -16,7 +16,7 @@ export const logOutUserSuccessEpic = socket => action$ =>
       console.warn(`logOutUserSuccessEpic: socket.close()`)
       socket.close()
       console.warn(`logOutUserSuccessEpic: socket.open()`)
-      socket.open()
+      socket.open('', { forceNew: true })
     })
 
 export const epics = [logInUserSuccessEpic, logOutUserSuccessEpic]

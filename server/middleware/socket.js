@@ -110,6 +110,7 @@ const connection = io =>
   socket => {
     console.warn('socket<connection>') // eslint-disable-line
     // console.log('connection: Object.keys(socket.request) =', Object.keys(socket.request))
+    console.log('connection: socket.request.headers =', socket.request.headers)
     console.log('connection: socket.request.sessionID =', socket.request.sessionID)
     console.log('connection: socket.request.cookie =', socket.request.cookie)
     console.log('connection: socket.request.user =', socket.request.user)

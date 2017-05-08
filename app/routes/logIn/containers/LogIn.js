@@ -43,10 +43,13 @@ const mapDispatchToProps = dispatch => ({
         console.warn(`response =`, response)
         return response.json()
       })
-      .then(payload => dispatch({
-        type: `LOG_IN_USER_SUCCESS`,
-        payload,
-      }))
+      .then(payload => {
+        localStorage.setItem(`me`, JSON.stringify(payload))
+        dispatch({
+          type: `LOG_IN_USER_SUCCESS`,
+          payload,
+        })
+      })
       .catch(payload => dispatch({
         type: `LOG_IN_USER_FAILURE`,
         payload,

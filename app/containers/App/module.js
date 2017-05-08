@@ -11,9 +11,11 @@ import { map } from 'rxjs/operator/map'
  * causes socket.emit(`command`, { type: doSomething })
  * and returns { type: `DO_SOMETHING` }
  */
-export const commandEpic = socket => action$ =>
+export const commandEpic = socket => (action$, store) =>
   action$.ofType(`COMMAND`)
-    ::map(({ payload: command }) => {
+    ::map(({ payload }) => {
+      const token = store.getState().getIn(['me', 'token'])
+      const command = Object.assign({ token }, payload)
       socket.emit(`command`, command)
       return {
         type: changeCase.constantCase(command.type),
@@ -21,9 +23,11 @@ export const commandEpic = socket => action$ =>
       }
     })
 
-export const queryEpic = socket => action$ =>
+export const queryEpic = socket => (action$, store) =>
   action$.ofType(`QUERY`)
-    ::map(({ payload: query }) => {
+    ::map(({ payload }) => {
+      const token = store.getState().getIn(['me', 'token'])
+      const query = Object.assign({ token }, payload)
       socket.emit(`query`, query)
       return {
         type: changeCase.constantCase(query.type),

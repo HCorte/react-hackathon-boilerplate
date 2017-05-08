@@ -116,7 +116,6 @@ epic$.next(queryEpic(socket))
 socket.on('connect', () => {
   console.debug(`socket<connect>`)
   // FIXME: Handle re-connection (data: redux reset & load new)
-  socket.emit(`query`, { type: `getUser` })
 })
 socket.on('disconnect', reason => {
   console.debug(`socket<disconnect>: reason =`, reason)
@@ -137,6 +136,20 @@ socket.on(`event`, data => {
   }
   console.debug(`socket<event>: reduxAction =`, reduxAction)
 })
+
+const meString = localStorage.getItem('me')
+
+if (meString) {
+  try {
+    const me = JSON.parse(meString)
+    store.dispatch({
+      type: `LOG_IN_USER_SUCCESS`,
+      payload: me,
+    })
+  } catch (e) {
+    console.error(`JSON.parse(meString): e =`, e)
+  }
+}
 
 // Hot reloadable translation json files
 if (module.hot) {

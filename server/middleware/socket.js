@@ -9,6 +9,7 @@ const passportSocketIo = require('passport.socketio')
 const debug = require('debug')('boilerplate:middleware:socket')
 
 const storePlus = require('./storePlus')
+const { authParticulars } = require('./token')
 
 const unfilteredCommands = require('../commands')
 const unfilteredQueries = require('../queries')
@@ -110,19 +111,17 @@ const connection = io =>
   socket => {
     console.warn('socket<connection>') // eslint-disable-line
     // console.log('connection: Object.keys(socket.request) =', Object.keys(socket.request))
+    /*
     console.log('connection: socket.request.headers =', socket.request.headers)
     console.log('connection: socket.request.sessionID =', socket.request.sessionID)
     console.log('connection: socket.request.cookie =', socket.request.cookie)
     console.log('connection: socket.request.user =', socket.request.user)
+    */
 
     socket.emit('event', { type: `SocketConnected` })
 
-    const userIsLoggedIn = socket.request.user.logged_in
-    const isAdminUser = socket.request.user.role === 'admin'
-
-    if (userIsLoggedIn) {
-      // FIXME: on connection if session, then return user (getMe)
-    }
+    // const userIsLoggedIn = socket.request.user.logged_in
+    // const isAdminUser = socket.request.user.role === 'admin'
 
     socket.on('command', data => {
       console.warn(`socket<command>: data =`, data)
@@ -130,10 +129,16 @@ const connection = io =>
       const isUserCommand = Reflect.has(userCommands, data.type)
       const isAdminCommand = Reflect.has(adminCommands, data.type)
 
+      const {
+        token,
+        userIsLoggedIn,
+        isAdminUser,
+      } = authParticulars(data.token)
+
       if (isUserCommand && userIsLoggedIn) {
-        userCommands[data.type](io, socket, data)
+        userCommands[data.type](io, socket, { token }, data.payload)
       } else if (isAdminCommand && isAdminUser) {
-        adminCommands[data.type](io, socket, data)
+        adminCommands[data.type](io, socket, { token }, data.payload)
       } else if (!userIsLoggedIn) {
         socket.emit('event', {
           type: 'CommandRejected',
@@ -160,10 +165,17 @@ const connection = io =>
 
       const isUserQuery = Reflect.has(userQueries, data.type)
       const isPublicQuery = Reflect.has(publicQueries, data.type)
+
+      const {
+        token,
+        userIsLoggedIn,
+        // isAdminUser,
+      } = authParticulars(data.token)
+
       if (isPublicQuery) {
-        publicQueries[data.type](io, socket, data)
+        publicQueries[data.type](io, socket, data.payload)
       } else if (isUserQuery && userIsLoggedIn) {
-        userQueries[data.type](io, socket, data)
+        userQueries[data.type](io, socket, { token }, data.payload)
       } else if (isUserQuery && !userIsLoggedIn) {
         socket.emit('event', {
           type: 'CommandRejected',
@@ -173,7 +185,7 @@ const connection = io =>
       } else if (!isUserQuery && !isPublicQuery) {
         socket.emit('event', {
           type: 'QueryRejected',
-          code: 404,
+          code: 404, // command not found
           payload: data,
         })
       }

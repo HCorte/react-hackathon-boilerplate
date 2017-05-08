@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy
+const moment = require('moment')
 const debug = require('debug')('boilerplate:middleware:passport')
 
 const userQueries = require('../queries/user')
@@ -7,6 +8,7 @@ const {
   isActiveUser,
   sanitizeUser,
 } = require('./user')
+const { createToken } = require('./token')
 
 const localConfig = {
   usernameField: 'username',
@@ -39,7 +41,7 @@ module.exports = passport => {
     'local-login',
     new LocalStrategy(localConfig, (req, username, password, done) =>
       userQueries._getUser({ username, email: req.body.email })
-        .then(user => {
+        .then(user => { // eslint-disable-line consistent-return
           debug(`passport: local-login: user =`, sanitizeUser(user))
           if (!user) {
             slowDone('User not found', done)
@@ -48,7 +50,9 @@ module.exports = passport => {
           } else if (!isActiveUser(user)) {
             slowDone('Your account has been deactivated', done)
           } else {
-            done(null, sanitizeUser(user))
+            const expires = moment().add(365, 'days').valueOf()
+            const token = createToken(user._id, user.role, expires)
+            return done(null, sanitizeUser(Object.assign({ token }, user)))
           }
         })
         .catch(err => done(err))

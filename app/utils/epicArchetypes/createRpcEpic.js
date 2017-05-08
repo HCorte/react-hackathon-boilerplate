@@ -52,7 +52,7 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
             const unauthorized = {
               type: `UNAUTHORIZED`,
             }
-            const actions = error.xhr.code !== 403
+            const actions = error.xhr.code !== 401
               ? [failure]
               : [failure, unauthorized]
             return Observable.of(actions)

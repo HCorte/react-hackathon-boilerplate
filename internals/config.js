@@ -33,6 +33,7 @@ const ReactBoilerplate = {
         'socket.io',
         'bcrypt',
         'mongoose',
+        'jwt-simple',
       ],
 
       /**

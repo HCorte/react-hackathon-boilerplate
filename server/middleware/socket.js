@@ -26,7 +26,7 @@ const attachRedis = () => {
   return adapter({ pubClient, subClient })
 }
 
-const usePassport = cookieParser => {
+const usePassport = (/* cookieParser, passport */) => {
   const onAuthorizeSuccess = (data, accept) => {
     console.log('successful connection to socket.io')
 
@@ -56,7 +56,8 @@ const usePassport = cookieParser => {
   const settings = Object.assign(
     basicPassportSettings,
     storePlus,
-    { cookieParser }
+    // { cookieParser, passport }
+    {}
   )
 
   return passportSocketIo.authorize(settings)

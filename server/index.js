@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 // FIXME: add helmet for security purposes
 app.use(bodyParser.json())
 // app.use(cookieParser(process.env.COOKIE_SECRET || 'c00k13_s3cr3t', {}))
-app.use(cookieParser())
+// app.use(cookieParser())
 
 // Initialize session
 if (process.env.NODE_ENV === 'production') {
@@ -51,7 +51,7 @@ require('./middleware/passport')(passport)
 
 const io = socketio(server)
 io.adapter(socketMiddleware.attachRedis())
-io.use(socketMiddleware.usePassport(cookieParser))
+io.use(socketMiddleware.usePassport(cookieParser, passport))
 io.on('connection', socketMiddleware.connection(io))
 
 // Setup REST routes

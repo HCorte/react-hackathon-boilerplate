@@ -39,9 +39,6 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
         settings
       )
 
-      console.warn(`rpcEpic: url =`, url)
-      console.warn(`rpcEpic: payload =`, payload)
-
       return Observable.race(
         Observable.fromPromise(fetch(url, payload))
           .map(rpcSuccess(type))

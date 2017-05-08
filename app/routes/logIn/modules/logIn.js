@@ -1,16 +1,16 @@
 import createRpcEpic from 'utils/epicArchetypes/createRpcEpic'
 
-const type = 'log in user'
+const type = 'log me in'
 const createUrl = () => 'login'
 const method = 'POST'
 
 // FIXME: hide data in redux, because this a login
-const { logInUserEpic, logInUserRequest } = createRpcEpic(type, createUrl, { method })
+const { logMeInEpic, logMeInRequest } = createRpcEpic(type, createUrl, { method })
 
 export const requests = {
-  logInUserRequest,
+  logMeInRequest,
 }
-export const epics = [logInUserEpic]
+export const epics = [logMeInEpic]
 
 // ------------------------------------
 // Action Handlers
@@ -20,4 +20,4 @@ export const epics = [logInUserEpic]
 // ------------------------------------
 
 // No actions handlers or reducer,
-// instead it uses `/containers/User/reducer.js`
+// instead it uses `/modules/me`

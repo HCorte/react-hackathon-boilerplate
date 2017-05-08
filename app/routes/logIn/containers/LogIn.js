@@ -25,7 +25,7 @@ const mapStateToProps = () => ({
 
 const mapDispatchToProps = dispatch => ({
   // FIXME: This places the password in the redux stack, this seems a really bad idea
-  // onSubmit: payload => dispatch(requests.logInUserRequest(payload)),
+  // onSubmit: payload => dispatch(requests.logMeInRequest(payload)),
   onSubmit: body => {
     // FIXME: remove epic for this to work
     // dispatch({ type: 'LOG_IN_USER_REQUEST' })
@@ -46,7 +46,7 @@ const mapDispatchToProps = dispatch => ({
       .then(payload => {
         localStorage.setItem(`me`, JSON.stringify(payload))
         dispatch({
-          type: `LOG_IN_USER_SUCCESS`,
+          type: `LOG_ME_IN_SUCCESS`,
           payload,
         })
       })

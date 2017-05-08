@@ -9,7 +9,7 @@ import { LOCATION_CHANGE } from 'react-router-redux'
 import { reducer as formReducer } from 'redux-form/immutable'
 
 import languageProviderReducer from 'containers/LanguageProvider/reducer'
-import meReducer from 'containers/User/reducer'
+import meReducer from 'modules/me'
 
 /*
  * routeReducer

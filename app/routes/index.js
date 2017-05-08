@@ -1,15 +1,36 @@
-// We only need to import the modules necessary for initial render
-import User from 'containers/User'
+import { connect } from 'react-redux'
+import CoreLayout from 'layouts/CoreLayout'
 import home from './home'
 import counter from './counter'
 import logIn from './logIn'
+
+const mapStateToProps = state => ({
+  me: state.get('me'),
+})
+
+const mapDispatchToProps = dispatch => ({
+  command: type => payload => dispatch({
+    type: 'COMMAND',
+    payload: {
+      type,
+      payload,
+    },
+  }),
+  query: type => payload => dispatch({
+    type: 'QUERY',
+    payload: {
+      type,
+      payload,
+    },
+  }),
+})
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
 
 export const createRoutes = (store) => ({
   path: '/',
-  component: User,
+  component: connect(mapStateToProps, mapDispatchToProps)(CoreLayout),
   indexRoute: home,
   childRoutes: [
     counter(store),

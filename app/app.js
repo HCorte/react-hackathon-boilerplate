@@ -22,7 +22,7 @@ import { constantCase } from 'change-case'
 
 // Import selector for `syncHistoryWithStore`
 // FIXME: move this to User or move User to App
-import { makeSelectLocationState } from 'containers/App/selectors'
+import { makeSelectLocationState } from 'modules/route'
 
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider'
@@ -36,8 +36,8 @@ import 'file-loader?name=[name].[ext]!./.htaccess'
 
 import configureStore from './store'
 import { epic$ } from './utils/asyncInjectors'
-import { commandEpic, queryEpic } from './containers/App/module'
-import { logInUserSuccessEpic, logOutUserSuccessEpic } from './containers/User/module'
+import { commandEpic, queryEpic } from './modules/commandAndQuery'
+import { logMeInSuccessEpic, logMeOutSuccessEpic } from './modules/me'
 
 //
 // // Import i18n messUserages
@@ -108,8 +108,8 @@ const render = !isDev
 // FIXME: refactor to HOC ???
 const socket = io('', { forceNew: true })
 
-epic$.next(logInUserSuccessEpic(socket))
-epic$.next(logOutUserSuccessEpic(socket))
+epic$.next(logMeInSuccessEpic(socket))
+epic$.next(logMeOutSuccessEpic(socket))
 epic$.next(commandEpic(socket))
 epic$.next(queryEpic(socket))
 
@@ -137,13 +137,16 @@ socket.on(`event`, data => {
   console.debug(`socket<event>: reduxAction =`, reduxAction)
 })
 
+/**
+ * Check localstorage for me and my token
+ */
 const meString = localStorage.getItem('me')
 
 if (meString) {
   try {
     const me = JSON.parse(meString)
     store.dispatch({
-      type: `LOG_IN_USER_SUCCESS`,
+      type: `LOG_ME_IN_SUCCESS`,
       payload: me,
     })
   } catch (e) {

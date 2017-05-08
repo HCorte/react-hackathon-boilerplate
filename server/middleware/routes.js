@@ -13,7 +13,7 @@ module.exports = (passport, app) => {
       .then(user => {
         req.login(req.body, err => {
           if (err) throw new Error(err)
-          res.status(201).send({ user })
+          res.status(201).send(user)
         })
       })
       // FIXME: Get the correct format for REST errors
@@ -21,7 +21,7 @@ module.exports = (passport, app) => {
   })
 
   app.post('/api/login', passport.authenticate('local-login'), (req, res) => {
-    res.json({ user: req.user })
+    res.json(req.user)
   })
 
   app.get('/api/logout', (req, res) => {

@@ -9,7 +9,7 @@ import { LOCATION_CHANGE } from 'react-router-redux'
 import { reducer as formReducer } from 'redux-form/immutable'
 
 import languageProviderReducer from 'containers/LanguageProvider/reducer'
-import userReducer from 'containers/User/reducer'
+import meReducer from 'containers/User/reducer'
 
 /*
  * routeReducer
@@ -45,7 +45,7 @@ function routeReducer(state = routeInitialState, action) {
 export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
-    user: userReducer,
+    me: meReducer,
     form: formReducer,
     language: languageProviderReducer,
     ...asyncReducers,

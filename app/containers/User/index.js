@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import CoreLayout from '../../layouts/CoreLayout'
 
 const mapStateToProps = state => ({
-  user: state.get('user'),
+  me: state.get('me'),
 })
 
 const mapDispatchToProps = {

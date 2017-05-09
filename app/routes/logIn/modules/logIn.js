@@ -10,6 +10,7 @@ const { logMeInEpic, logMeInRequest } = createRpcEpic(type, createUrl, { method 
 export const requests = {
   logMeInRequest,
 }
+
 export const epics = [logMeInEpic]
 
 // ------------------------------------

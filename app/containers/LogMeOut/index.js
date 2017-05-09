@@ -27,10 +27,12 @@ const mapDispatchToProps = dispatch => ({
       },
     })
       // .then(response => response.json())
+      /*
       .then(response => {
         console.warn(`logMeOut: response =`, response)
         return response.json()
       })
+      */
       .then(payload => {
         dispatch({
           type: `LOG_ME_OUT_SUCCESS`,

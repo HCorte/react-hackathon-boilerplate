@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form/immutable'
 
-import LogInComponent from '../components/LogIn'
-import { requests } from '../modules/logIn'
+import LogMe from '../components/LogMe'
+import { requests } from '../modules/logMeIn'
 
 const validate = values => {
   // IMPORTANT: values is an Immutable.Map here!
@@ -15,10 +15,10 @@ const validate = values => {
   return errors
 }
 
-const LogIn = reduxForm({
-  form: 'logIn', // a unique name for this form
+const LogMeIn = reduxForm({
+  form: 'logMeIn', // a unique name for this form
   validate,
-})(LogInComponent)
+})(LogMe)
 
 const mapStateToProps = () => ({
 })
@@ -51,10 +51,10 @@ const mapDispatchToProps = dispatch => ({
         })
       })
       .catch(payload => dispatch({
-        type: `LOG_IN_USER_FAILURE`,
+        type: `LOG_ME_IN_FAILURE`,
         payload,
       }))
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(LogIn)
+export default connect(mapStateToProps, mapDispatchToProps)(LogMeIn)

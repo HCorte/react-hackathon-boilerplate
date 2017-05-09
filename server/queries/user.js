@@ -27,7 +27,8 @@ const _getUser = query => {
     ? undefined
     : {
       _id: 'safkj13th3pj1pu4gh1p3u94gbq',
-      username: 'jan-jan',
+      username: 'Jan-Jan',
+      loginName: 'jan-jan',
       password: generateHash('password'),
       active: true,
     }

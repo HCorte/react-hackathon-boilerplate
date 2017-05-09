@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Field } from 'redux-form/immutable'
 import FieldInput from 'components/FieldInput'
 
-const LogIn = ({
+const LogMeIn = ({
   handleSubmit,
   me,
 }) =>
@@ -12,9 +12,9 @@ const LogIn = ({
     <button type="submit" disabled={me.isLoading}>Submit</button>
   </form>
 
-LogIn.propTypes = {
+LogMeIn.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   me: PropTypes.object.isRequired,
 }
 
-export default LogIn
+export default LogMeIn

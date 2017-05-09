@@ -29,7 +29,8 @@ module.exports = (passport, app) => {
     req.session.destroy(err => {
       if (err) console.warn(`logout: err =`, err)
       // FIXME: redirect is probably senseless
-      res.redirect('/') // Inside a callback… bulletproof!
+      // res.redirect('/') // Inside a callback… bulletproof!
+      res.json()
     })
   })
 }

@@ -1,15 +1,49 @@
 import { fromJS } from 'immutable'
+import { mapTo } from 'rxjs/operator/mapTo'
+import { map } from 'rxjs/operator/map'
+
+import createRpcEpic from 'utils/epicArchetypes/createRpcEpic'
 
 /**
  * Epics
  */
+const type = 'log me out'
+const createUrl = () => 'logout'
+const method = 'POST'
+
+// FIXME: hide data in redux, because this a login
+const { logMeOutEpic, logMeOutRequest } = createRpcEpic(type, createUrl, { method })
+
+export const requests = {
+  logMeOutRequest,
+}
+
 export const logMeInSuccessEpic = socket => action$ =>
   action$.ofType(`LOG_ME_IN_SUCCESS`)
+    ::map(() => {
+      console.warn(`logMeInSuccessEpic: reset socket`)
+      socket.close()
+      socket.open('', { forceNew: true })
+      return {
+        type: `COMMAND`,
+        payload: {
+          type: `joinMySocket`,
+        },
+      }
+    })
+    /*
     .forEach(() => {
       console.warn(`logMeInSuccessEpic: reset socket`)
       socket.close()
       socket.open('', { forceNew: true })
     })
+    ::mapTo({
+      type: `COMMAND`,
+      payload: {
+        type: `joinMySocket`,
+      },
+    })
+    */
 
 export const logMeOutSuccessEpic = socket => action$ =>
   action$.ofType(`LOG_ME_OUT_SUCCESS`)
@@ -20,7 +54,36 @@ export const logMeOutSuccessEpic = socket => action$ =>
       socket.open('', { forceNew: true })
     })
 
-export const epics = [logMeInSuccessEpic, logMeOutSuccessEpic]
+export const logMeOutRequestEpic = action$ =>
+  action$.ofType(`LOG_ME_OUT_REQUEST`)
+    ::mapTo({
+      type: `COMMAND`,
+      payload: {
+        type: `leaveMySocket`,
+      },
+    })
+
+// If logout fails, then join back on user's socket
+export const logMeOutFailureEpic = action$ =>
+  action$.ofType(`LOG_ME_OUT_FAILURE`)
+    ::mapTo({
+      type: `COMMAND`,
+      payload: {
+        type: `joinMySocket`,
+      },
+    })
+
+// If logout gets aborted, then join back on user's socket
+export const logMeOutAbortedEpic = action$ =>
+  action$.ofType(`LOG_ME_OUT_ABORTED`)
+    ::mapTo({
+      type: `COMMAND`,
+      payload: {
+        type: `joinMySocket`,
+      },
+    })
+
+export const epics = [logMeInSuccessEpic, logMeOutSuccessEpic, logMeOutEpic, logMeOutRequestEpic, logMeOutFailureEpic, logMeOutAbortedEpic]
 
 // ------------------------------------
 // Action Handlers
@@ -28,11 +91,11 @@ export const epics = [logMeInSuccessEpic, logMeOutSuccessEpic]
 const initialState = fromJS({})
 
 const ACTION_HANDLERS = {
-  LOG_IN_USER_REQUEST: () => fromJS({ isLoading: true }),
+  LOG_ME_IN_REQUEST: () => fromJS({ isLoading: true }),
   LOG_ME_IN_SUCCESS: (state, action) => fromJS(action.payload),
-  LOG_IN_USER_FAILURE: (state, action) => fromJS({ error: action.payload }),
-  LOG_IN_USER_ABORTED: () => initialState,
-  LOG_OUT_USER: () => initialState,
+  LOG_ME_IN_FAILURE: (state, action) => fromJS({ error: action.payload }),
+  LOG_ME_IN_ABORTED: () => initialState,
+  LOG_ME_OUT_SUCCESS: () => initialState,
 }
 
 // ------------------------------------

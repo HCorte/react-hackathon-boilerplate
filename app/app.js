@@ -37,8 +37,8 @@ import 'file-loader?name=[name].[ext]!./.htaccess'
 import configureStore from './store'
 import { epic$ } from './utils/asyncInjectors'
 import { commandEpic, queryEpic } from './modules/commandAndQuery'
-import { logMeInSuccessEpic, logMeOutSuccessEpic } from './modules/me'
-
+// import { logMeInSuccessEpic, logMeOutSuccessEpic } from './modules/me'
+import { epics as myEpics } from './modules/me'
 //
 // // Import i18n messUserages
 import { translationMessages } from './i18n'
@@ -108,8 +108,10 @@ const render = !isDev
 // FIXME: refactor to HOC ???
 const socket = io('', { forceNew: true })
 
+const [logMeInSuccessEpic, logMeOutSuccessEpic, ...myOtherEpics] = myEpics
 epic$.next(logMeInSuccessEpic(socket))
 epic$.next(logMeOutSuccessEpic(socket))
+myOtherEpics.forEach(epic => epic$.next(epic))
 epic$.next(commandEpic(socket))
 epic$.next(queryEpic(socket))
 

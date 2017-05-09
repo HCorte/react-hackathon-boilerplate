@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import CoreLayout from 'layouts/CoreLayout'
 import home from './home'
 import counter from './counter'
-import logIn from './logIn'
+import login from './login'
 
 const mapStateToProps = state => ({
   me: state.get('me'),
@@ -34,7 +34,7 @@ export const createRoutes = (store) => ({
   indexRoute: home,
   childRoutes: [
     counter(store),
-    logIn(store),
+    login(store),
   ],
 })
 

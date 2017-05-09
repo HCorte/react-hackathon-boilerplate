@@ -11,7 +11,8 @@ import { errorLoading, loadModule } from 'utils/asyncLoaders'
  *                      or `./modules/${name}`
  */
 const config = {
-  name: 'logIn',
+  name: 'logMeIn',
+  path: 'login',
 }
 
 

@@ -41,6 +41,10 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
 
       return Observable.race(
         Observable.fromPromise(fetch(url, payload))
+          .map(data => {
+            console.warn(`Observable.fromPromise: ${type}: data =`, data)
+            return data
+          })
           .map(rpcSuccess(type))
           .takeUntil(action$.ofType(`${type}_ABORTED`))
           .catch(error => {

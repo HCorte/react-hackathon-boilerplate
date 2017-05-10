@@ -49,6 +49,10 @@ app.use(passport.initialize())
 app.use(passport.session())
 require('./middleware/passport')(passport)
 
+// Connect to mongoose
+require('./middleware/mongoose')(app)
+
+// Setup socket.io
 const io = socketio(server)
 io.adapter(socketMiddleware.attachRedis())
 io.use(socketMiddleware.usePassport(cookieParser, passport))

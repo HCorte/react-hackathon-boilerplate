@@ -1,13 +1,12 @@
 const userQueries = require('../queries/user')
-const userCommands = require('../queries/user')
-
+const userCommands = require('../commands/user')
 
 module.exports = (passport, app) => {
   app.post('/api/signup', (req, res) => {
     userQueries._getUser(req.body)
       .delay(2000)
       .then(existingUser => {
-        if (existingUser) throw new Error('A user already exists.')
+        if (existingUser) throw new Error('That user already exists.')
         return userCommands._createUser(req.body)
       })
       .then(user => {

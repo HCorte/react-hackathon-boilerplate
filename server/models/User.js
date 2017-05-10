@@ -29,11 +29,13 @@ const userSchema = mongoose.Schema({
 })
 
 // FIXME: ensure indexing is complete before saving, so that fields can be truly unique
-
 userSchema.pre('save', next => {
+  console.warn(`User: .pre('save', ): this =`, this)
+  /*
   this.email = this.email.toLowerCase()
   this.username = this.username.toLowerCase()
   this.password = generateHash(this.password)
+  */
   next()
 })
 

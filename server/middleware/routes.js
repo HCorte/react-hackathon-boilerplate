@@ -1,5 +1,7 @@
 const userQueries = require('../queries/user')
 const userCommands = require('../commands/user')
+const { sanitizeUser } = require('./user')
+const { createToken } = require('./token')
 
 module.exports = (passport, app) => {
   app.post('/api/signup', (req, res) => {
@@ -12,7 +14,8 @@ module.exports = (passport, app) => {
       .then(user => {
         req.login(req.body, err => {
           if (err) throw new Error(err)
-          res.status(201).send(user)
+          const token = createToken(user._id, user.role)
+          res.status(201).send(sanitizeUser(Object.assign({ token }, user)))
         })
       })
       // FIXME: Get the correct format for REST errors

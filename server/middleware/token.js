@@ -12,8 +12,10 @@ const authParticulars = rawToken => {
   return { token, userIsLoggedIn, isAdminUser }
 }
 
-const createToken = (userId, userRole, expires) =>
-  jwt.encode({ userId, userRole, expires }, JWT_SECRET)
+const createToken = (userId, userRole) => {
+  const expires = moment().add(365, 'days').valueOf()
+  return jwt.encode({ userId, userRole, expires }, JWT_SECRET)
+}
 
 const validateToken = (token, userId) => {
   const decoded = jwt.decode(token, JWT_SECRET)

@@ -5,6 +5,7 @@ const _createUser = data => {
   const user = new User(data)
   // save data to mongodb
   return user.save()
+    .then(u => u.toObject())
 }
 
 

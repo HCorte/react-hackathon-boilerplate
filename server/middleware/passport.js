@@ -56,8 +56,7 @@ module.exports = passport => {
           } else if (!isActiveUser(user)) {
             slowDone('Your account has been deactivated', done)
           } else {
-            const expires = moment().add(365, 'days').valueOf()
-            const token = createToken(user._id, user.role, expires)
+            const token = createToken(user._id, user.role)
             return done(null, sanitizeUser(Object.assign({ token }, user)))
           }
         })

@@ -3,6 +3,7 @@ import CoreLayout from 'layouts/CoreLayout'
 import home from './home'
 import counter from './counter'
 import login from './login'
+import signup from './signup'
 
 const mapStateToProps = state => ({
   me: state.get('me'),
@@ -35,6 +36,7 @@ export const createRoutes = (store) => ({
   childRoutes: [
     counter(store),
     login(store),
+    signup(store),
   ],
 })
 

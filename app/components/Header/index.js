@@ -14,4 +14,8 @@ export default () =>
     <Link to="/login" activeClassName="route--active">
       Log In
     </Link>
+    {' · '}
+    <Link to="/signup" activeClassName="route--active">
+      Sign Up
+    </Link>
   </div>

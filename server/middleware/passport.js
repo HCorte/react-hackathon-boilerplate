@@ -23,6 +23,11 @@ const slowDone = (msg, done) =>
   }, 2000, msg, done)
 
 module.exports = passport => {
+  passport.serializeUser((data, done) => {
+    debug(`passport.serializeUser: data =`, data)
+    done(null, data)
+  })
+  /*
   // Below express-session middleware
   // Pass just the user id to the passport middleware
   passport.serializeUser(({ _id }, done) => {
@@ -36,6 +41,7 @@ module.exports = passport => {
         done(null, sanitizeUser(user))
       })
   })
+  */
 
   passport.use(
     'local-login',

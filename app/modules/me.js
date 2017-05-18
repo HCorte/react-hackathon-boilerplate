@@ -93,7 +93,9 @@ const initialState = fromJS({})
 const ACTION_HANDLERS = {
   // reduce 'log me in' actions
   LOG_ME_IN_REQUEST: () => fromJS({ isLoading: true }),
-  LOG_ME_IN_SUCCESS: (state, action) => fromJS(action.payload),
+  LOG_ME_IN_SUCCESS: (state, action) => action.payload.user
+    ? fromJS(action.payload.user)
+    : fromJS(action.payload),
   LOG_ME_IN_FAILURE: (state, action) => action.payload.error
     ? fromJS(action.payload)
     : fromJS({ error: action.payload }),

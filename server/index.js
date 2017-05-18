@@ -3,13 +3,14 @@
 const express = require('express')
 const http = require('http')
 const logger = require('./logger')
-const passport = require('passport')
 const resolve = require('path').resolve
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const socketio = require('socket.io')
 
 const argv = require('minimist')(process.argv.slice(2))
+
+const passport = require('./middleware/passport')
 const setup = require('./middleware/frontend')
 const sessionMiddleware = require('./middleware/session')
 const socketMiddleware = require('./middleware/socket')
@@ -47,7 +48,7 @@ app.use(sessionMiddleware)
 // Initialize Passport (with session)
 app.use(passport.initialize())
 app.use(passport.session())
-require('./middleware/passport')(passport)
+// require('./middleware/passport')(passport)
 
 // Connect to mongoose
 require('./middleware/mongoose')(app)

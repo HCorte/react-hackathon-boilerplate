@@ -10,8 +10,8 @@ const _createUser = data => {
       console.log(`WOOT user should be created`)
       return u.toObject()
     })
+    // FIXME: sanitizeUser ???
 }
-
 
 /**
  * Commands are exposed via sockets.

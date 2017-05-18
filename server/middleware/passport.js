@@ -53,10 +53,8 @@ module.exports = passport => {
           console.error('ERROR: user.password =', user && user.password)
           if (!user) {
             slowDone('User not found', done)
-          /*
           } else if (!checkPassword(password, user)) {
             slowDone('Invalid Password', done)
-          */
           } else {
             const token = createToken(user._id, user.role)
             return done(null, sanitizeUser(Object.assign({ token }, user)))

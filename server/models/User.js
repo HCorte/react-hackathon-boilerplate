@@ -18,7 +18,6 @@ const username = {
 }
 const password = {
   type: String,
-  select: false,
   required: true,
 }
 

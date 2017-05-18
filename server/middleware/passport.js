@@ -48,7 +48,7 @@ module.exports = passport => {
     new LocalStrategy(localConfig, (req, username, password, done) =>
       userQueries._getUser({ username, email: req.body.email })
         .then(user => { // eslint-disable-line consistent-return
-          debug(`passport: local-login: user =`, sanitizeUser(user))
+          debug(`passport: local-login: user =`, user)
           if (!user) {
             slowDone('User not found', done)
           } else if (!checkPassword(password, user)) {

@@ -38,12 +38,15 @@ const mapDispatchToProps = dispatch => ({
       },
       body: JSON.stringify(body),
     })
-      // .then(response => response.json())
+      .then(response => response.json())
+      /*
       .then(response => {
         console.warn(`response =`, response)
         return response.json()
       })
+      */
       .then(payload => {
+        if (payload.error) throw (payload)
         localStorage.setItem(`me`, JSON.stringify(payload))
         dispatch({
           type: `LOG_ME_IN_SUCCESS`,

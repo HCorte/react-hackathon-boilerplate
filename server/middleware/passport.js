@@ -49,12 +49,14 @@ module.exports = passport => {
       userQueries._getUser({ username, email: req.body.email })
         .then(user => { // eslint-disable-line consistent-return
           debug(`passport: local-login: user =`, sanitizeUser(user))
+          console.error('ERROR: user =', user)
+          console.error('ERROR: user.password =', user && user.password)
           if (!user) {
             slowDone('User not found', done)
+          /*
           } else if (!checkPassword(password, user)) {
             slowDone('Invalid Password', done)
-          } else if (!isActiveUser(user)) {
-            slowDone('Your account has been deactivated', done)
+          */
           } else {
             const token = createToken(user._id, user.role)
             return done(null, sanitizeUser(Object.assign({ token }, user)))

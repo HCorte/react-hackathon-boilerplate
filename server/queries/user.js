@@ -2,42 +2,34 @@ const {
   pick,
   compose,
   evolve,
+  reject,
 } = require('ramda')
 const Promise = require('bluebird')
-const { generateHash } = require('../middleware/user')
 const User = require('../models/User')
+const isUndefined = require('../utils/isUndefined')
 
 const toLowerCase = str => typeof str === 'string'
   ? str.toLowerCase()
   : str
 
 const _getUser = query => {
+  /*
+  // FIXME:
   const cleanQuery = compose(
+    reject(isUndefined),
     evolve({
       email: toLowerCase,
       username: toLowerCase,
     }),
     pick(['_id', 'username', 'email'])
   )(query)
-
-  console.error(`\nERROR: _getUser NOT implemented\n`)
+  */
+  const cleanQuery = { username: query.username.toLowerCase() }
   console.warn(`_getUser: cleanQuery =`, cleanQuery)
-  console.warn(`_getUser: get on either username OR email`)
+  console.warn(`_getUser: FIXME: to get on either username OR email`)
   return User.findOne(cleanQuery)
     .lean()
     .exec()
-    /*
-  const result = cleanQuery.username !== 'jan-jan'
-    ? undefined
-    : {
-      _id: 'safkj13th3pj1pu4gh1p3u94gbq',
-      username: 'Jan-Jan',
-      loginName: 'jan-jan',
-      password: generateHash('password'),
-      active: true,
-    }
-  return Promise.resolve(result)
-  */
 }
 
 module.exports = {

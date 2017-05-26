@@ -1,3 +1,3 @@
 const isUndefined = item => !item
 
-module.export = isUndefined
+module.exports = isUndefined

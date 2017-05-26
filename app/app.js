@@ -37,9 +37,9 @@ import 'file-loader?name=[name].[ext]!./.htaccess'
 import configureStore from './store'
 import { epic$ } from './utils/asyncInjectors'
 import { commandEpic, queryEpic } from './modules/commandAndQuery'
-// import { logMeInSuccessEpic, logMeOutSuccessEpic } from './modules/me'
 import { epics as myEpics } from './modules/me'
-//
+import { epics as routeEpics } from './modules/route'
+
 // // Import i18n messUserages
 import { translationMessages } from './i18n'
 
@@ -87,7 +87,7 @@ const isDev = (process.env.NODE_ENV === 'development' && module.hot)
 
 const renderError = !isDev
   ? () => {}
-  : (error) => {
+  : error => {
     // eslint-disable-next-line global-require
     const RedBox = require('redbox-react').default
 
@@ -95,8 +95,8 @@ const renderError = !isDev
   }
 
 const render = !isDev
-  ? (messages) => renderApp(messages)
-  : (messages) => {
+  ? messages => renderApp(messages)
+  : messages => {
     try {
       renderApp(messages)
     } catch (error) {
@@ -108,12 +108,15 @@ const render = !isDev
 // FIXME: refactor to HOC ???
 const socket = io('', { forceNew: true })
 
+// FIXME: Pass socket as parameter to myEpics
 const [logMeInSuccessEpic, logMeOutSuccessEpic, ...myOtherEpics] = myEpics
-epic$.next(logMeInSuccessEpic(socket))
-epic$.next(logMeOutSuccessEpic(socket))
-myOtherEpics.forEach(epic => epic$.next(epic))
 epic$.next(commandEpic(socket))
 epic$.next(queryEpic(socket))
+epic$.next(logMeInSuccessEpic(socket))
+epic$.next(logMeOutSuccessEpic(socket))
+myOtherEpics
+  .concat(routeEpics)
+  .forEach(epic => epic$.next(epic))
 
 socket.on('connect', () => {
   console.debug(`socket<connect>`)

@@ -1,4 +1,4 @@
-import changeCase from 'change-case'
+import { constantCase } from 'change-case'
 import { map } from 'rxjs/operator/map'
 
 /**
@@ -18,7 +18,7 @@ export const commandEpic = socket => (action$, store) =>
       const command = Object.assign({ token }, payload)
       socket.emit(`command`, command)
       return {
-        type: changeCase.constantCase(command.type),
+        type: constantCase(command.type),
         payload: command.payload,
       }
     })

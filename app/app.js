@@ -20,10 +20,6 @@ import 'sanitize.css/sanitize.css'
 import io from 'socket.io-client/dist/socket.io'
 import { constantCase } from 'change-case'
 
-// Import selector for `syncHistoryWithStore`
-// FIXME: move this to User or move User to App
-import { makeSelectLocationState } from 'modules/route'
-
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider'
 
@@ -38,7 +34,11 @@ import configureStore from './store'
 import { epic$ } from './utils/asyncInjectors'
 import { commandEpic, queryEpic } from './modules/commandAndQuery'
 import { epics as myEpics } from './modules/me'
-import { epics as routeEpics } from './modules/route'
+import {
+  epics as routeEpics,
+  makeSelectLocationState,
+  mapLocationToAction,
+} from './modules/route'
 
 // // Import i18n messUserages
 import { translationMessages } from './i18n'
@@ -158,6 +158,9 @@ if (meString) {
     console.error(`JSON.parse(meString): e =`, e)
   }
 }
+
+// onload emit current location
+store.dispatch(mapLocationToAction(browserHistory.getCurrentLocation()))
 
 // Hot reloadable translation json files
 if (module.hot) {

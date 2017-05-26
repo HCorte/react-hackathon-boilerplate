@@ -23,6 +23,10 @@ export const selectors = {
   makeSelectLocationState,
 }
 
+export const mapLocationToAction = ({ params, pathname, query }) => ({
+  type: `/${constantCase(pathname) || ''}`,
+  payload: fromJS({ query, params }),
+})
 
 /**
  * This epic emits on location change
@@ -34,9 +38,6 @@ export const selectors = {
  */
 export const routeEpic = action$ =>
   action$.ofType(`@@router/LOCATION_CHANGE`)
-    ::map(({ payload: { params, pathname, query } }) => ({
-      type: `/${constantCase(pathname) || ''}`,
-      payload: fromJS({ query, params }),
-    }))
+  ::map(({ payload }) => mapLocationToAction(payload))
 
 export const epics = [routeEpic]

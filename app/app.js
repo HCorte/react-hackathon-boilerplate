@@ -110,13 +110,13 @@ const socket = io('', { forceNew: true })
 
 // FIXME: Pass socket as parameter to myEpics
 const [logMeInSuccessEpic, logMeOutSuccessEpic, ...myOtherEpics] = myEpics
-epic$.next(commandEpic(socket))
-epic$.next(queryEpic(socket))
 epic$.next(logMeInSuccessEpic(socket))
 epic$.next(logMeOutSuccessEpic(socket))
 myOtherEpics
   .concat(routeEpics)
   .forEach(epic => epic$.next(epic))
+epic$.next(commandEpic(socket))
+epic$.next(queryEpic(socket))
 
 socket.on('connect', () => {
   console.debug(`socket<connect>`)

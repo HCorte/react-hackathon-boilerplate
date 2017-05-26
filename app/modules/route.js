@@ -34,15 +34,9 @@ export const selectors = {
  */
 export const routeEpic = action$ =>
   action$.ofType(`@@router/LOCATION_CHANGE`)
-    ::map(({ payload }) => {
-      console.warn(`routeEpic: payload =`, payload)
-      return {
-        type: `/${constantCase(payload.pathname) || ''}`,
-        payload: fromJS({
-          query: payload.query,
-          // search: payload.search,
-        }),
-      }
-    })
+    ::map(({ payload: { params, pathname, query } }) => ({
+      type: `/${constantCase(pathname) || ''}`,
+      payload: fromJS({ query, params }),
+    }))
 
 export const epics = [routeEpic]

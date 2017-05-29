@@ -7,14 +7,15 @@ const { createToken } = require('./token')
 module.exports = (passport, app) => {
   app.post('/api/signup', (req, res) => {
     userQueries._getUser(req.body)
-      .delay(2000)
       .then(existingUser => {
         if (existingUser) throw new Error('That user already exists.')
         return userCommands._createUser(req.body)
       })
       .then(user => {
-        req.login(req.body, err => {
-          if (err) throw new Error(err)
+        req.login(req.body, err => { // eslint-disable-line sdf
+          if (err) {
+            return setTimeout(() => { throw new Error(err) }, 2000)
+          }
           const token = createToken(user._id, user.role)
           res.status(201).send(sanitizeUser(Object.assign({ token }, user)))
         })
@@ -22,12 +23,6 @@ module.exports = (passport, app) => {
       // FIXME: Get the correct format for REST errors
       .catch(err => { res.status(500).json({ error: err.message }) })
   })
-
-  /*
-  app.post('/api/login', passport.authenticate('local-login'), (req, res) => {
-    res.json(req.user)
-  })
-  */
 
   app.post('/api/login', (req, res, next) => {
     passport.authenticate(
@@ -41,7 +36,7 @@ module.exports = (passport, app) => {
         debug(`/api/login: info =`, info)
         // Generate a JSON response reflecting authentication status
         if (!user) {
-          return info
+          return info && info.message
             ? res.status(401).send({ error: { message: info.message } })
             : res.status(500).send({ error: { message: 'Unknown error.' } })
         }

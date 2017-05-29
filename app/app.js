@@ -151,9 +151,9 @@ socket.on('connect', () => {
   // FIXME: add path based rooms to join
 })
 
-// SOCKET_DISCONNECT redux action can be used in reducers as needed
+// SOCKET_DISCONNECTED redux action can be used in reducers as needed
 socket.on('disconnect', () => {
-  store.dispatch({ type: 'SOCKET_DISCONNECT' })
+  store.dispatch({ type: 'SOCKET_DISCONNECTED' })
 })
 /**
  * All socket messages from BE are `events`

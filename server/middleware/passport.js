@@ -1,8 +1,6 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const moment = require('moment')
 const debug = require('debug')('boilerplate:middleware:passport')
-
 
 const userQueries = require('../queries/user')
 const {
@@ -27,21 +25,6 @@ passport.serializeUser((data, done) => {
   debug(`passport.serializeUser: data =`, data)
   done(null, data)
 })
-/*
-// Below express-session middleware
-// Pass just the user id to the passport middleware
-passport.serializeUser(({ _id }, done) => {
-  done(null, _id)
-})
-
-// Reading your user base ont he user.id
-passport.deserializeUser((_id, done) => {
-  userQueries._getUser({ _id })
-    .then(user => {
-      done(null, sanitizeUser(user))
-    })
-})
-*/
 
 passport.use(
   'local-login',

@@ -10,6 +10,7 @@ import createReducer from './reducers'
 import { epic$ } from './utils/asyncInjectors'
 import rootEpic from './rootEpic'
 
+// Inject the rootEpic into the epic middleware
 const epicMiddleware = createEpicMiddleware(rootEpic(epic$))
 
 export default function configureStore(initialState = {}, history) {
@@ -26,11 +27,17 @@ export default function configureStore(initialState = {}, history) {
   ]
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
+  // FIXME: setup dev tools to hide @@form and @@location
   const composeEnhancers =
     process.env.NODE_ENV !== 'production' &&
     typeof window === 'object' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // hide routing changes (remember these are converted into other actions that are shown)
+        // hide redux-form actions
+        actionsBlacklist: ['@@router/', '@@redux-form/'],
+      })
+      : compose
 
   const store = createStore(
     createReducer(),

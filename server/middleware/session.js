@@ -1,3 +1,5 @@
+// FIXME: Is session still necessary?
+
 const expressSession = require('express-session')
 const storePlus = require('./storePlus')
 

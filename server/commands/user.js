@@ -1,16 +1,10 @@
 const User = require('../models/User')
 
 const _createUser = data => {
-  // use mongoose to cleanup the data
-  const user = new User(data)
-  // save data to mongodb
-  return user.save()
-    // .then(u => u.toObject())
-    .then(u => {
-      console.log(`WOOT user should be created`)
-      return u.toObject()
-    })
-    // FIXME: sanitizeUser ???
+  const user = new User(data) // use mongoose to cleanup the data
+  return user.save() // save data to mongodb
+    .then(u => u.toObject())
+    // FIXME: sanitizeUser, or change the mongoose security model
 }
 
 /**

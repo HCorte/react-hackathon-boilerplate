@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
 })
 
 // FIXME: ensure indexing is complete before saving, so that fields can be truly unique
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function userPreSave(next) {
   // FIXME: Can this be moved to setters?
   // FIXME: Also create userSchema.pre('update', ...
   this.email = this.email.toLowerCase()

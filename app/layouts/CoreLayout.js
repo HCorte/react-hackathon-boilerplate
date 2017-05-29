@@ -21,7 +21,7 @@ const AppWrapper = styled.div`
 `
 
 const CoreLayout = ({ children, ...props }) => {
-  // const childrenWithProps = React.Children.toArray(children)
+  // copy props into children
   const childrenWithProps = React.Children
     .map(children, child => React.cloneElement(child, props))
 

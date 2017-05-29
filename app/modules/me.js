@@ -18,68 +18,54 @@ export const requests = {
   logMeOutRequest,
 }
 
+// Upon LOG_ME_IN_SUCCESS connect to all rooms relevant to user
 export const logMeInSuccessEpic = socket => action$ =>
   action$.ofType(`LOG_ME_IN_SUCCESS`)
-    ::map(() => {
-      console.warn(`logMeInSuccessEpic: reset socket`)
-      socket.close()
-      socket.open('', { forceNew: true })
-      return {
-        type: `COMMAND`,
-        payload: {
-          type: `joinMySocket`,
-        },
-      }
-    })
-    /*
     .forEach(() => {
-      console.warn(`logMeInSuccessEpic: reset socket`)
+      // sockets close && open is needed to reset socket connection
       socket.close()
       socket.open('', { forceNew: true })
     })
-    ::mapTo({
-      type: `COMMAND`,
-      payload: {
-        type: `joinMySocket`,
-      },
-    })
-    */
 
+// Upon LOG_ME_OUT_SUCCESS remove `me` (with token) from localStorage
+// NOTE: LOG_ME_OUT_SUCCESS is used in local reducers to reset as needed
 export const logMeOutSuccessEpic = socket => action$ =>
   action$.ofType(`LOG_ME_OUT_SUCCESS`)
     .forEach(() => {
       localStorage.removeItem('me')
-      console.warn(`logMeOutSuccessEpic: reset socket`)
       socket.close()
       socket.open('', { forceNew: true })
     })
 
+// LOG_ME_OUT_REQUEST presumes success of logMeOutEpic (to avoid race issues)
+// and so disconnects the user from all his rooms
+// Should logMeOutEpic fail, then see next two epics
 export const logMeOutRequestEpic = action$ =>
   action$.ofType(`LOG_ME_OUT_REQUEST`)
     ::mapTo({
       type: `COMMAND`,
       payload: {
-        type: `leaveMySocket`,
+        type: `leaveMyRooms`,
       },
     })
 
-// If logout fails, then join back on user's socket
+// If logMeOutEpic fails, then join back on user's socket
 export const logMeOutFailureEpic = action$ =>
   action$.ofType(`LOG_ME_OUT_FAILURE`)
     ::mapTo({
       type: `COMMAND`,
       payload: {
-        type: `joinMySocket`,
+        type: `joinMyRooms`,
       },
     })
 
-// If logout gets aborted, then join back on user's socket
+// If logMeOutEpic gets aborted, then join back on user's socket
 export const logMeOutAbortedEpic = action$ =>
   action$.ofType(`LOG_ME_OUT_ABORTED`)
     ::mapTo({
       type: `COMMAND`,
       payload: {
-        type: `joinMySocket`,
+        type: `joinMyRooms`,
       },
     })
 

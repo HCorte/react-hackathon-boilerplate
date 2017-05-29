@@ -85,6 +85,7 @@ const renderApp = messages => {
 
 const isDev = (process.env.NODE_ENV === 'development' && module.hot)
 
+// Show helpful error messages if React cannot load
 const renderError = !isDev
   ? () => {}
   : error => {
@@ -94,6 +95,7 @@ const renderError = !isDev
     ReactDOM.render(<RedBox {...{ error }} />, MOUNT_NODE)
   }
 
+// in dev mode show error messages when rendering i18n
 const render = !isDev
   ? messages => renderApp(messages)
   : messages => {
@@ -118,30 +120,6 @@ myOtherEpics
 epic$.next(commandEpic(socket))
 epic$.next(queryEpic(socket))
 
-socket.on('connect', () => {
-  console.debug(`socket<connect>`)
-  // FIXME: Handle re-connection (data: redux reset & load new)
-})
-socket.on('disconnect', reason => {
-  console.debug(`socket<disconnect>: reason =`, reason)
-  // FIXME: on disconnect reset appropriate data in redux
-})
-socket.on(`event`, data => {
-  const type = constantCase(data.type)
-  const reduxAction = { ...data, type }
-  store.dispatch(reduxAction)
-  if (data.type === 'CommandRejected'
-    || data.type === 'QueryRejected'
-  ) {
-    const reduxActionFailure = {
-      ...data.payload,
-      type: `${constantCase(data.payload.type)}_FAILURE`,
-    }
-    store.dispatch(reduxActionFailure)
-  }
-  console.debug(`socket<event>: reduxAction =`, reduxAction)
-})
-
 /**
  * Check localstorage for me and my token
  */
@@ -159,7 +137,48 @@ if (meString) {
   }
 }
 
-// onload emit current location
+
+socket.on('connect', () => {
+  const token = store.getState().getIn(['me', 'token'])
+  if (token) {
+    store.dispatch({
+      type: `COMMAND`,
+      payload: {
+        type: `joinMyRooms`,
+      },
+    })
+  }
+  // FIXME: add path based rooms to join
+})
+
+// SOCKET_DISCONNECT redux action can be used in reducers as needed
+socket.on('disconnect', () => {
+  store.dispatch({ type: 'SOCKET_DISCONNECT' })
+})
+/**
+ * All socket messages from BE are `events`
+ * These events are converted in redux actions
+ *
+ * The convention is that an event will contain
+ * a type, which becomes the redux action type
+ * the rest of the data (including a payload) will be added to the redux action
+ */
+socket.on(`event`, data => {
+  const type = constantCase(data.type)
+  const reduxAction = { ...data, type }
+  store.dispatch(reduxAction)
+  if (data.type === 'CommandRejected'
+    || data.type === 'QueryRejected'
+  ) {
+    const reduxActionFailure = {
+      ...data.payload,
+      type: `${constantCase(data.payload.type)}_FAILURE`,
+    }
+    store.dispatch(reduxActionFailure)
+  }
+})
+
+// on initial load emit current location
 store.dispatch(mapLocationToAction(browserHistory.getCurrentLocation()))
 
 // Hot reloadable translation json files

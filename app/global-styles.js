@@ -1,5 +1,6 @@
 import { injectGlobal } from 'styled-components'
 
+// FIXME: move global styles here
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
   html,

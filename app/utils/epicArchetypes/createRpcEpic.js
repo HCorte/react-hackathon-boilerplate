@@ -4,14 +4,45 @@ import { Observable } from 'rxjs/Rx'
 // instead load as
 // import { Observable } from 'rxjs/Observable'
 // with only needed operators
-// import { fromPromise } from 'rxjs/add/observable/fromPromise'
+// import { fromPromise } from 'rxjs/operator/fromPromise'
 import { mapTo } from 'rxjs/operator/mapTo'
 import { take } from 'rxjs/operator/take'
 import changeCase from 'change-case'
 
+// fetch does not throw on anything but network errors
+// thus status needs to be passed down along with body
+const responseToJson = response =>
+  response.json()
+    .then(cleanJson => ({
+      code: response.status,
+      body: cleanJson,
+    }))
+
+// check kind of response by code
+// then return stream of success actions or stream of failure actions
+// in case of 401, then failure stream includes action.type === `UNAUTHORIZED`
+const mapResponseToSuccessOrFailureStream = type => response => {
+  if (response.code >= 200 && response.code < 300) {
+    return Observable.of(rpcSuccess(type)(response.body))
+  }
+  // handle error
+  const failure = rpcFailure(type)(response)
+  const unauthorized = { type: `UNAUTHORIZED` }
+  const actions = response.code !== 401
+    ? [failure]
+    : [failure, unauthorized]
+  return Observable.of(...actions)
+}
+
 // action creators
-export const rpcRequest = type => payload => ({ type: `${type}_REQUEST`, payload })
-export const rpcSuccess = type => payload => ({ type: `${type}_SUCCESS`, payload })
+export const rpcRequest = type => payload =>
+  ({ type: `${type}_REQUEST`, payload })
+
+export const rpcSuccess = type => payload =>
+  ({ type: `${type}_SUCCESS`, payload })
+
+export const rpcFailure = type => ({ xhr, body }) =>
+  ({ type: `${type}_FAILURE`, payload: xhr ? xhr.response : body })
 
 // Race between the AJAX call and an EPIC_END.
 // If the EPIC_END, emit a cancel action to
@@ -27,10 +58,15 @@ export const rpcSuccess = type => payload => ({ type: `${type}_SUCCESS`, payload
 export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
   action$.ofType(`${type}_REQUEST`)
     .mergeMap(action => {
-      const url = `/api/${createUrl(action.payload.toJS())}`
+      // prep data
+      const body = action.payload
+        && typeof action.payload.toJS === 'function'
+          ? action.payload.toJS()
+          : action.payload
+      const url = `/api/${createUrl(body)}`
       const payload = Object.assign(
         {
-          body: JSON.stringify(action.payload.toJS()),
+          body: JSON.stringify(body),
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -38,29 +74,12 @@ export const rpcEpic = (type, createUrl, settings = {}) => action$ =>
         },
         settings
       )
-
+      // fetch from url, with payload
       return Observable.race(
-        Observable.fromPromise(fetch(url, payload))
-          .map(data => {
-            console.warn(`Observable.fromPromise: ${type}: data =`, data)
-            return data
-          })
-          .map(rpcSuccess(type))
+        Observable.fromPromise(fetch(url, payload).then(responseToJson))
+          .switchMap(mapResponseToSuccessOrFailureStream(type))
           .takeUntil(action$.ofType(`${type}_ABORTED`))
-          .catch(error => {
-            const failure = {
-              type: `${type}_FAILURE`,
-              payload: error.xhr.response,
-              error: true,
-            }
-            const unauthorized = {
-              type: `UNAUTHORIZED`,
-            }
-            const actions = error.xhr.code !== 401
-              ? [failure]
-              : [failure, unauthorized]
-            return Observable.of(actions)
-          }),
+          .catch(rpcFailure(type)),
         action$.ofType(EPIC_END)
           ::take(1)
           ::mapTo({ type: `${type}_ABORTED` })

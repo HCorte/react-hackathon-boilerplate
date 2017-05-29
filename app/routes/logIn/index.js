@@ -15,7 +15,10 @@ const config = {
   path: 'login',
 }
 
-
+/**
+ * CHANGE NOTHING BELOW THIS LINE
+ * the function below uses config above
+ */
 export default (store) => {
   // Create reusable async injectors using getAsyncInjectors factory
   const { injectReducer, injectEpics } = getAsyncInjectors(store)

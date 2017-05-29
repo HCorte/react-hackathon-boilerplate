@@ -4,50 +4,21 @@
  */
 
 import { combineReducers } from 'redux-immutable'
-import { fromJS } from 'immutable'
-import { LOCATION_CHANGE } from 'react-router-redux'
-import { reducer as formReducer } from 'redux-form/immutable'
+import { reducer as form } from 'redux-form/immutable'
 
-import languageProviderReducer from 'containers/LanguageProvider/reducer'
-import meReducer from 'modules/me'
-
-/*
- * routeReducer
- *
- * The reducer merges route location changes into our immutable state.
- * The change is necessitated by moving to react-router-redux@4
- *
- */
-
-// Initial routing state
-const routeInitialState = fromJS({
-  locationBeforeTransitions: null,
-})
-
-/**
- * Merge route into the global application state
- */
-function routeReducer(state = routeInitialState, action) {
-  switch (action.type) {
-    /* istanbul ignore next */
-    case LOCATION_CHANGE:
-      return state.merge({
-        locationBeforeTransitions: action.payload,
-      })
-    default:
-      return state
-  }
-}
+import language from 'containers/LanguageProvider/reducer'
+import me from 'modules/me'
+import route from 'modules/route'
 
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
 export default function createReducer(asyncReducers) {
   return combineReducers({
-    route: routeReducer,
-    me: meReducer,
-    form: formReducer,
-    language: languageProviderReducer,
+    route,
+    me,
+    form,
+    language,
     ...asyncReducers,
   })
 }

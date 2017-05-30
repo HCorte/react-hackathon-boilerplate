@@ -89,7 +89,7 @@ But wait... there's more!
 
 <sub><i>Keywords: React.js, Redux, Hot Reloading, ESNext, Babel, react-router, Offline First, ServiceWorker, styled-components, redux-observable, FontFaceObserver, CQRS-ES</i></sub>
 
-## Quick start
+# Quick start
 
 1. Clone this repo using `git clone --depth=1 https://github.com/Jan-Jan/react-hackathon-boilerplate <your-project-name>`
 1. Enter your project `cd <your-project-name>`
@@ -101,9 +101,13 @@ But wait... there's more!
 
 Now you're ready to rumble!
 
+**At the moment, when you load at npm package for the backend, you need to add that to `internals/config.js` for exclusion from the dll build.**
+
 > Please note that this boilerplate is **production-ready and not meant for beginners**! If you're just starting out with react or redux, please refer to https://github.com/petehunt/react-howto instead. If you want a solid, battle-tested base to build your next product upon and have some experience with react, this is the perfect start for you.
 
 # Application Structure
+
+Tests are co-located in `tests` directories everywhere.
 
 ```
 .
@@ -132,21 +136,31 @@ Now you're ready to rumble!
 │   ├── app.js                 # Bootstrap and rendering of app
 │   ├── favicon.ico            # Icon used in browser tab of app
 │   ├── global-styles.js       # Global style for app
-│   ├── i18n.js                # Setup the i18n language files and locale data for app
+│   └── i18n.js                # Setup the i18n language files and locale data for app
 │   ├── index.html             # Main HTML page container for app
-│   ├── manifest.json          # Manifest used for Progressive Web App definition
+│   └── manifest.json          # Manifest used for Progressive Web App definition
 │   ├── reducers.js            # Combine all reducers, then export
 │   ├── rootEpic.js            # Define rootEpic visa vi redux-observable
-│   ├── store.js               # Create the store with asynchronously loaded reducers and epics
-
-
-
-├── bin                        # Build/Start scripts
-├── config                     # Project and build configurations
-├── public                     # Static public assets (not imported anywhere in source code)
-├── server                     # Express application that provides webpack middleware
-│   └── main.js                # Server application entry point
-└── tests                      # Unit tests
+│   └── store.js               # Create the store with asynchronously loaded reducers and epics
+├── build                      # Target for the build scripts
+├── coverage                   # Output $ npm run analyze
+├── docs                       # Old react-boilerplate docs
+├── internals                  # Old react-boilerplate docs
+│   ├── generators             # Deprecated
+│   ├── mocks                  #
+│   ├── scripts                # Host npm scripts
+│   ├── testing                # Testing setup
+│   ├── webpack                # Webpack definitions
+│   └── config.js              # Config for dllPlugin
+├── server                     #
+│   ├── commands               # All command definitions and access config
+│   ├── middleware             # Middleware
+│   ├── models                 # Data model definitions
+│   ├── queries                # All query definitions and access config
+│   ├── utils                  # Utility functions
+│   ├── index.js               # Define server, and load middleware
+│   └── logger.js              # Pretty logging used by server and webpack
+└── shared                     # Files that are required by both app and server
 ```
 
 # Old react-boilerplate Documentation

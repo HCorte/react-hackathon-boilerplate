@@ -1,5 +1,5 @@
 /**
- * Create the store with asynchronously loaded reducers
+ * Create the store with asynchronously loaded reducers and epics
  */
 
 import { createStore, applyMiddleware, compose } from 'redux'

@@ -12,7 +12,7 @@ Pull requests are welcome.
 
 1. [Background](#background)
 1. [Features](#features)
-1. [Quick Started](#quick-started)
+1. [Quick Start](#quick-start)
 1. [Application Structure](#application-structure)
 1. [Development](#development)
   1. [Developer Tools](#developer-tools)
@@ -26,11 +26,11 @@ The focus of the project is to allow programmers to focus only business logic an
 
 This project created:
 
-* boilerplate free redux
-* an auto-adapting API by integrating redux actions with
+* *boilerplate free redux*
+* an *auto-adapting API* by integrating redux actions with
   * commands and queries sent over sockets to the server, and
   * events sent to the app
-* only pure function react components needed
+* only *pure functional react* components needed
 
 by standing on the shoulders of giants:
 
@@ -49,7 +49,7 @@ by standing on the shoulders of giants:
   <dd>Because of the way the API has been created, there is no need for boilerplate in redux, instead you just define the reducers and epics you want.<dt>
 
   <dt>Pure functional react</dt>
-  <dd>The router is coupled to redux-observable to emit route changes as redux actions. Per route epics can be created to listen to specific route emitted, and so call side effects, eg, fetch. Together with [recompose](https://github.com/acdlite/recompose) and [react with rxjs to create timers]()
+  <dd>The router is coupled to redux-observable to emit route changes as redux actions. Per route epics can be created to listen to specific route emitted, and so call side effects, eg, fetch. Together with [recompose](https://github.com/acdlite/recompose) there is no need for lifecycle methods, and so only pure functional react code is possible.</dd>
 
   <dt>Instant feedback</dt>
   <dd>Enjoy the best DX (Developer eXperience) and code your app at the speed of thought! Your saved changes to the CSS and JS are reflected instantaneously without refreshing the page. Preserve application state even when you update something in the underlying code!</dd>
@@ -94,7 +94,7 @@ But wait... there's more!
 1. Clone this repo using `git clone --depth=1 https://github.com/Jan-Jan/react-hackathon-boilerplate <your-project-name>`
 1. Enter your project `cd <your-project-name>`
 1. Install dependencies `npm install`.<br />
-   *We auto-detect `yarn` for installing packages by default, if you wish to force `npm` usage do: `USE_YARN=false npm isntall`*<br />
+   *We auto-detect `yarn` for installing packages by default, if you wish to force `npm` usage do: `USE_YARN=false npm install`*<br />
 1. Install [Redis](https://redis.io/)
 1. Install [MongoDB](https://www.mongodb.com/download-center)
 1. At this point you can run `DEBUG=boilerplate npm start` to see the example app at `http://localhost:3000`.
@@ -105,7 +105,49 @@ Now you're ready to rumble!
 
 # Application Structure
 
+```
+.
+├── app                        # App source code
+│   ├── components             # Global Reusable Presentational Components
+│   ├── containers             # Global Reusable Container Components
+│   ├── layouts                # Components that dictate major page structure
+│   ├── modules                # Reducers and epics that globally used
+│   ├── PropTypes              # Definitions of immutable react PropTypes
+│   ├── routes                 # Main route definitions and async split points
+│   │   ├── index.js           # Bootstrap main application routes with store
+│   │   ├── Home               # Fractal route
+│   │   │   ├── index.js       # Route definitions and async split points
+│   │   │   ├── assets         # Assets required to render components
+│   │   │   ├── components     # Presentational React Components
+│   │   │   └── routes **      # Fractal sub-routes (** optional)
+│   │   └── Counter            # Fractal route
+│   │       ├── index.js       # Counter route definition
+│   │       ├── container      # Connect components to actions and store
+│   │       ├── modules        # Collections of reducers/constants/actions
+│   │       └── routes **      # Fractal sub-routes (** optional)
+│   ├── translations           # Result of $ npm run extract-intl
+│   ├── utils                  # Utility functions
+│   ├── .htaccess              # Proposed setup for Apache
+│   ├── .nginx.conf            # Proposed setup for nginx
+│   ├── app.js                 # Bootstrap and rendering of app
+│   ├── favicon.ico            # Icon used in browser tab of app
+│   ├── global-styles.js       # Global style for app
+│   ├── i18n.js                # Setup the i18n language files and locale data for app
+│   ├── index.html             # Main HTML page container for app
+│   ├── manifest.json          # Manifest used for Progressive Web App definition
+│   ├── reducers.js            # Combine all reducers, then export
+│   ├── rootEpic.js            # Define rootEpic visa vi redux-observable
+│   ├── store.js               # Create the store with asynchronously loaded reducers and epics
 
+
+
+├── bin                        # Build/Start scripts
+├── config                     # Project and build configurations
+├── public                     # Static public assets (not imported anywhere in source code)
+├── server                     # Express application that provides webpack middleware
+│   └── main.js                # Server application entry point
+└── tests                      # Unit tests
+```
 
 # Old react-boilerplate Documentation
 
